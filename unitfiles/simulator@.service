@@ -1,0 +1,23 @@
+#Author: Red Erik @ OSGrid
+#Date: 2022-12-09
+#This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, C>
+
+[Unit]
+Description=Tmux session for %i simulator
+Requires=mysqld.service
+After=mysqld.service
+
+[Service]
+Type=forking
+User=%i
+Group=%i
+PIDFile=/tmp/%i.pid
+WorkingDirectory=/srv/opensimulator/managementScripts
+EnvironmentFile=/srv/opensimulator/managementScripts/%i.conf
+ExecStart=/bin/bash /srv/opensimulator/managementScripts/startSimulator.sh ${gridBasePath} ${grid} %i
+ExecStop=/bin/python3 /srv/opensimulator/managementScripts/shutdownSimulator.py ${address} ${port} ${password}
+ExecStopPost=/usr/bin/rm /tmp/%i.pid
+KillMode=none
+
+[Install]
+WantedBy=osgrid.target

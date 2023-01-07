@@ -1,0 +1,35 @@
+#Author: Red Erik @ OSGrid
+#Date: 2022-12-07
+#This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+
+Linux Users for OpenSimulator
+1) opensimulator
+2) [SIMULATORNAME] (1 to n)
+
+OpenSimulator Directory Tree
+
+1) /srv/opensimulator/[GRIDNAME]/robust/[ROBUSTSERVICE] (0 to n)
+2) /srv/opensimulator/[GRIDNAME]/simulators/[SIMULATORNAME] (0 to n)
+3) /srv/opensimulator/managementScripts/
+4) /var/opensimulator/backups/OARs/[GRIDNAME]/
+5) /var/opensimulator/backups/IARs/[GRIDNAME]/
+6) /var/opensimulator/backups/databases/[GRIDNAME]/
+
+1) Create a subfolder per service, if needed
+2) Create a subfolder per simulator
+
+OpenSimulator Database
+
+1) [GRIDNAME][SERVICENAME] (1 to n*m) (n grids, m services)
+2) [GRIDNAME]Estates
+3) [GRIDNAME][SIMULATORNAME] (1 to n*m) (n grids, m simulators)
+
+1) It's for the robust services
+
+OpenSimulator Ports
+
+8000 to 8999 TCP: Robust Ports
+9000 to 9999 UDP: Regions Ports
+9000 to 9999 TCP: Simulators Ports
+10000 to 10999 TCP: Remote Admin Ports
+11000 to 11999 TCP: REST Console Ports
