@@ -30,6 +30,12 @@ elif len(sys.argv) == 5:
         sys.exit(1)
 else:
     sys.exit("Wrong number of arguments")
+
+status = console.exec("")
+response = console.getExecResponse()
+prettifier = xmlPrettifier(response)
+value = prettifier.prettify()
+print(value,end='')
 ############################ End Initialization ###############################
 
 ################################# Main Loop ###################################
