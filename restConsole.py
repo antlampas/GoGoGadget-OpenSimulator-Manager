@@ -6,6 +6,7 @@ import urllib.request
 import urllib.parse
 import defusedxml.minidom
 import sys
+import signal
 
 from time import sleep
 
@@ -49,8 +50,11 @@ class restConsole:
                 return doc.toprettyxml('    ')
         except Exception as e:
             raise
-    def keepAlive(self):
-        pass
+    def keepAlive(self,timeSpan):
+        signal.signal(signal.SIGKILL,stopLoop)
+        while True:
+            self.exec("")
+            sleep(timeSpan)
     def __del__(self):
         comm = {'ID':str(self.SessionID)}
         data = urllib.parse.urlencode(comm).encode('ascii')

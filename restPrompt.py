@@ -4,61 +4,59 @@
 
 import sys
 import re
+import signal
+
 from time import sleep
+from multiprocessing import Process
 
 from restConsole import restConsole
 from xmlPrettifier import xmlPrettifier
 
-############################## Initialization #################################
-if len(sys.argv) == 3:
-    try:
-        console = restConsole(sys.argv[1],sys.argv[2])
-    except Exception as e:
-        print(str(e))
-        sys.exit(1)
-elif len(sys.argv) == 4:
-    try:
-        console = restConsole(sys.argv[1],sys.argv[2],sys.argv[3])
-    except Exception as e:
-        print(str(e))
-        sys.exit(1)
-elif len(sys.argv) == 5:
-    try:
-        console = restConsole(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
-    except Exception as e:
-        print(str(e))
-        sys.exit(1)
-else:
-    sys.exit("Wrong number of arguments")
+def mainLoop():
+    while True:
+        try:
+            command = input("Prompt: ")
+            if command == "disconnect":
+                console.__del__()
+                sleep(0.1)
+                break
+            elif command == "quit":
+                status = console.exec("quit")
+                console.__del__()
+                sleep(0.1)
+                break
+            else:
+                status = console.exec(command)
+                response = console.getExecResponse()
+                prettifier = xmlPrettifier(response)
+                value = prettifier.prettify()
+                print(value,end='')
+        except Exception as e:
+            print(str(e))
+            sys.exit(1)
 
-status = console.exec("")
-response = console.getExecResponse()
-prettifier = xmlPrettifier(response)
-value = prettifier.prettify()
-print(value,end='')
+############################## Initialization #################################
+try:
+    if len(sys.argv) == 3:
+        console = restConsole(sys.argv[1],sys.argv[2])
+    elif len(sys.argv) == 4:
+        console = restConsole(sys.argv[1],sys.argv[2],sys.argv[3])
+    elif len(sys.argv) == 5:
+        console = restConsole(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
+    else:
+        sys.exit("Wrong number of arguments")
+except Exception as e:
+    print(str(e))
+    sys.exit(1)
+
+ml = Process(target=mainLoop)
+ka = Process(target=console.keepAlive,arguments=(60,))
 ############################ End Initialization ###############################
 
 ################################# Main Loop ###################################
-while True:
-    try:
-        command = input("Prompt: ")
-        if command == "disconnect":
-            console.__del__()
-            sleep(0.1)
-            break
-        elif command == "quit":
-            console.exec("quit")
-            console.__del__()
-            sleep(0.1)
-            break
-        else:
-            status = console.exec(command)
-            response = console.getExecResponse()
-            prettifier = xmlPrettifier(response)
-            value = prettifier.prettify()
-            print(value,end='')
-    except Exception as e:
-        print(str(e))
-        sys.exit(1)
+ml.start()
+kl.start()
+ml.join()
+kl.join()
 sys.exit(0)
 ############################### End Main Loop #################################
