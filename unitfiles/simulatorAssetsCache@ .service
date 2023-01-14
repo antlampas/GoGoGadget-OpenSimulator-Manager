@@ -10,9 +10,7 @@ User=%i
 Group=%i
 WorkingDirectory=/srv/opensimulator/managementScripts
 EnvironmentFile=/srv/opensimulator/managementScripts/%i.conf
-ExecStartPre=/usr/bin/python3 /srv/opensimulator/managementScripts/simulatorClearCache.py ${address} ${port} ${password}
-ExecStart=/usr/bin/python3 /srv/opensimulator/managementScripts/simulatorPersistAssets.py ${address} ${port} ${password}
-ExecStartPost=/usr/bin/python3 /srv/opensimulator/managementScripts/simulatorGenerateMap.py ${address} ${port} ${password}
+ExecStart=/usr/bin/python3 /srv/opensimulator/managementScripts/simulatorAssetsCache.py ${address} ${port} ${password}
 KillMode=none
 
 [Install]
