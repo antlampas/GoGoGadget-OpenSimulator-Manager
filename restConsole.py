@@ -53,7 +53,7 @@ class restConsole:
     def keepAlive(self,timeSpan):
         def stopLoop(signum,frame):
             keepalive = False
-        signal.signal(signal.SIGKILL,stopLoop)
+        signal.signal(signal.SIGINT,stopLoop)
         keepalive = True
         while keepalive:
             self.exec("")
