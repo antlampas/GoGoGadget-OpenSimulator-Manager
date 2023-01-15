@@ -55,8 +55,8 @@ ka = Process(target=console.keepAlive,args=(60,))
 
 ################################# Main Loop ###################################
 ml.start()
-kl.start()
+ka.start()
 ml.join()
-kl.join()
+ka.join()
 sys.exit(0)
 ############################### End Main Loop #################################
