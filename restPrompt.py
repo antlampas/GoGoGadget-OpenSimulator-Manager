@@ -50,7 +50,7 @@ except Exception as e:
     sys.exit(1)
 
 ml = Process(target=mainLoop)
-ka = Process(target=console.keepAlive,arguments=(60,))
+ka = Process(target=console.keepAlive,args=(60,))
 ############################ End Initialization ###############################
 
 ################################# Main Loop ###################################
