@@ -51,8 +51,11 @@ class restConsole:
         except Exception as e:
             raise
     def keepAlive(self,timeSpan):
+        def stopLoop(signum,frame):
+            keepalive = False
         signal.signal(signal.SIGKILL,stopLoop)
-        while True:
+        keepalive = True
+        while keepalive:
             self.exec("")
             sleep(timeSpan)
     def __del__(self):
