@@ -43,6 +43,9 @@ def mainLoop():
             sys.exit(1)
     print("Disconnecting...")
 
+def keepAlive(c,timeSpan):
+    c.keepAlive(timeSpan)
+
 ############################## Initialization #################################
 try:
     if len(sys.argv) == 3:
@@ -58,7 +61,7 @@ except Exception as e:
     sys.exit(1)
 
 #ka = Process(target=console.keepAlive,args=(5,))
-ka = Thread(target=console.keepAlive,args=(5,))
+ka = Thread(target=keepAlive,args=(console,5))
 ############################ End Initialization ###############################
 
 ################################# Main Loop ###################################
