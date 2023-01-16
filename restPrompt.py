@@ -3,16 +3,24 @@
 #This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 import sys
+import os
 import re
 import signal
 
-from time import sleep
+from threading import Event
 from multiprocessing import Process
 
 from restConsole import restConsole
 from xmlPrettifier import xmlPrettifier
 
+exit = Event()
+
+def sleep(timeSpan):
+    #nonlocal exit
+    exit.wait(timeSpan)
+
 def mainLoop():
+    nonlocal console
     while True:
         try:
             command = input("Prompt: ")
@@ -34,6 +42,7 @@ def mainLoop():
         except Exception as e:
             print(str(e))
             sys.exit(1)
+    print("Disconnecting...")
 
 ############################## Initialization #################################
 try:
@@ -49,14 +58,14 @@ except Exception as e:
     print(str(e))
     sys.exit(1)
 
-ml = Process(target=mainLoop)
 ka = Process(target=console.keepAlive,args=(60,))
 ############################ End Initialization ###############################
 
 ################################# Main Loop ###################################
-ml.start()
 ka.start()
-ml.join()
+mainLoop()
+os.kill(ka.pid,signal.SIGTERM)
 ka.join()
+print("Quitting...")
 sys.exit(0)
 ############################### End Main Loop #################################

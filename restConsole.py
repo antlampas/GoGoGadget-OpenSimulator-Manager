@@ -8,7 +8,7 @@ import defusedxml.minidom
 import sys
 import signal
 
-from time import sleep
+from threading import Event
 
 class restConsole:
     SessionID = 0
@@ -51,13 +51,22 @@ class restConsole:
         except Exception as e:
             raise
     def keepAlive(self,timeSpan):
-        def stopLoop(signum,frame):
-            keepalive = False
-        signal.signal(signal.SIGINT,stopLoop)
         keepalive = True
+        exit = Event()
+        def sleep(timeSpan):
+            nonlocal exit
+            exit.wait(timeSpan)
+        def stopLoop(signum,frame):
+            nonlocal keepalive
+            keepalive = False
+            exit.set()
+            print("Stopping Keep Alive...")
+        signal.signal(signal.SIGTERM,stopLoop)
         while keepalive:
             self.exec("")
             sleep(timeSpan)
+            print("keepalive: " + str(keepalive))
+        print("Terminating...")
     def __del__(self):
         comm = {'ID':str(self.SessionID)}
         data = urllib.parse.urlencode(comm).encode('ascii')
