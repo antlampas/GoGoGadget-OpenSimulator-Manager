@@ -30,7 +30,7 @@ class restConsole:
                     raise Exception("Unable to create session")
         except Exception as e:
             raise
-    def exec(self,command):
+    def exec(self,command=""):
         comm = {'ID':str(self.SessionID),'COMMAND':command}
         UserCommand = urllib.parse.urlencode(comm).encode('ascii')
         request = urllib.request.Request(f"{self.url}:{self.port}/SessionCommand/",UserCommand,method='POST')
