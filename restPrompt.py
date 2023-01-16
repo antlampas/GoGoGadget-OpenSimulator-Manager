@@ -20,7 +20,7 @@ def sleep(timeSpan):
     exit.wait(timeSpan)
 
 def mainLoop():
-    nonlocal console
+    #nonlocal console
     while True:
         try:
             command = input("Prompt: ")
