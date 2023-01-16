@@ -16,11 +16,9 @@ from xmlPrettifier import xmlPrettifier
 exit = Event()
 
 def sleep(timeSpan):
-    #nonlocal exit
     exit.wait(timeSpan)
 
 def mainLoop():
-    #nonlocal console
     while True:
         try:
             command = input("Prompt: ")
