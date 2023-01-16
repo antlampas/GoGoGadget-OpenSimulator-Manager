@@ -60,8 +60,8 @@ except Exception as e:
     print(str(e))
     sys.exit(1)
 
-#ka = Process(target=console.keepAlive,args=(5,))
-ka = Thread(target=keepAlive,args=(console,5))
+ka = Process(target=console.keepAlive,args=(5,))
+#ka = Thread(target=keepAlive,args=(console,5))
 ############################ End Initialization ###############################
 
 ################################# Main Loop ###################################
