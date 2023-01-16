@@ -60,13 +60,10 @@ class restConsole:
             nonlocal keepalive
             keepalive = False
             exit.set()
-            print("Stopping Keep Alive...")
         signal.signal(signal.SIGTERM,stopLoop)
         while keepalive:
             self.exec("")
             sleep(timeSpan)
-            print("keepalive: " + str(keepalive))
-        print("Terminating...")
     def __del__(self):
         comm = {'ID':str(self.SessionID)}
         data = urllib.parse.urlencode(comm).encode('ascii')
