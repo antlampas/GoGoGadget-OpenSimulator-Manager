@@ -8,6 +8,7 @@ import re
 import signal
 
 from threading import Event
+from threading import Thread
 from multiprocessing import Process
 
 from restConsole import restConsole
@@ -56,7 +57,8 @@ except Exception as e:
     print(str(e))
     sys.exit(1)
 
-ka = Process(target=console.keepAlive,args=(60,))
+#ka = Process(target=console.keepAlive,args=(5,))
+ka = Thread(target=console.keepAlive,args=(5,))
 ############################ End Initialization ###############################
 
 ################################# Main Loop ###################################
