@@ -59,7 +59,7 @@ except Exception as e:
     print(str(e))
     sys.exit(1)
 
-ka = Process(target=console.keepAlive,args=(10,))
+ka = Process(target=console.keepAlive,args=(30,))
 ############################ End Initialization ###############################
 
 ################################# Main Loop ###################################
