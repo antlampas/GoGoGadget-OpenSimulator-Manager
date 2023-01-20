@@ -33,6 +33,6 @@ class xmlPrettifier:
                         self.getNode(node.nodeName,i)
                         nodeContent = self.getNodeContent()
                         if nodeContent is not None:
-                            if self.currentNode.getAttribute("Command") == "false":
+                            if self.currentNode.getAttribute("Prompt") == "false" and self.currentNode.getAttribute("Input") == "false":
                                 response += nodeContent + "\n"
         return response
