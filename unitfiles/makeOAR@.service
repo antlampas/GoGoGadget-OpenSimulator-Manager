@@ -10,7 +10,7 @@ User=%i
 Group=%i
 WorkingDirectory=/srv/opensimulator/managementScripts
 EnvironmentFile=/srv/opensimulator/managementScripts/%i.conf
-ExecStart=/usr/bin/python3 /srv/opensimulator/managementScripts/makeOAR.py ${address} ${port} ${password} ${regionName} "/var/opensimulator/backups/OARs/${grid}/"
+ExecStart=/usr/bin/python3 /srv/opensimulator/managementScripts/remoteAdmin/makeOAR.py ${address} ${port} ${password} ${regionName} "/var/opensimulator/backups/OARs/${grid}/"
 ExecStartPost=/usr/bin/python3 /srv/opensimulator/managementScripts/removeOldOARs.py "/var/opensimulator/backups/OARs/${grid}/" ${backupTimeSpan} ${regionName}
 KillMode=none
 
