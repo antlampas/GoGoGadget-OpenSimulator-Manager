@@ -6,41 +6,88 @@
 
 gridBasePath="${1}"
 
-if [ -e ${gridBasePath} ]
-then
-    if [ -d ${gridBasePath} ]
-    then
-        robustServiceNames=()
-        for i in ${@:2}
-        do
-            if [ ${i} =~ ^[[:alnum]]$ ]
-            then
-                robustServiceNames+=(${i})
-            else
-                echo "${i} is not a valid name"
-            fi
-        done
-        if [ "${#robustServiceNames[@]}" ]
-        then
-            for robustServiceName in ${robustServiceNames[@]}
-            do
-                if [ $( mkdir ${gridBasePath}/robust/${robustServiceName} ) ]
-                then
-                    echo "${gridBasePath}/${robustServiceName} created"
-                else
+robustServiceNames=()
+invalidNames=()
 
-                    echo "${gridBasePath}/${robustServiceName} not created" >&2
+if [[ $# -gt 1 ]]
+then
+    if [ -e ${gridBasePath} ]
+    then
+        if [ -d ${gridBasePath} ]
+        then
+            for i in ${@:2}
+            do
+                if [[ ! ${i} =~ ^[[:alnum]]$ ]]
+                then
+                    robustServiceNames+=(${i})
+                else
+                    echo "${i} is not a valid name"
+                    invalidNames+=(${i})
                 fi
             done
+            if [[ ${#robustServiceNames[@]} -gt 0 ]]
+            then
+                for robustServiceName in ${robustServiceNames[@]}
+                do
+                    if mkdir -p ${gridBasePath}/robust/${robustServiceName}
+                    then
+                        echo "${gridBasePath}/${robustServiceName} created"
+                    else
+                        echo "${gridBasePath}/${robustServiceName} not created" >&2
+                    fi
+                done
+            else
+                echo "No valid robust service name given..."
+                for i in ${invalidNames[@]}
+                do
+                    echo "${i}"
+                done
+                exit 3
+            fi
+            if [[ ${#invalidNames[@]} -gt 0 ]]
+            then
+                echo "The following services directories have not been created due invalid name:"
+                for i in ${invalidNames[@]}
+                do
+                    echo "${i}"
+                done
+            fi
+            exit 0
         else
-            echo "No valid robust service name given"
-            exit 3
+            echo "${gridBasePath} is not a directory"
+            exit 2
         fi
     else
-        echo "${gridBasePath} is not a directory"
-        exit 2
+        echo "${gridBasePath} doesn't exists"
+        exit 1
+    fi
+elif [[ $# -eq 1 ]]
+then
+    if [ -e ${gridBasePath} ]
+    then
+        if [ -d ${gridBasePath} ]
+        then
+            if mkdir -p ${gridBasePath}/robust/robust
+                    then
+                        echo "${gridBasePath}/${robustServiceName} created"
+                    else
+
+                        echo "${gridBasePath}/${robustServiceName} not created" >&2
+                    fi
+        else
+            echo "${gridBasePath} is not a directory"
+            exit 2
+        fi
+    else
+        echo "${gridBasePath} doesn't exists"
+        exit 1
     fi
 else
-    echo "${gridBasePath} doesn't exists"
+    echo "Wrong Number of arguments"
+    echo "Expecting:"
+    echo "\"GridBasePath\" \"ServiceName\" ... \"ServiceNameN\""
+    echo "or"
+    echo "\"GridBasePath\""
+    echo
     exit 1
 fi
