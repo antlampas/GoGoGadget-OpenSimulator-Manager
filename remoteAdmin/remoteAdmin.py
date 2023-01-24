@@ -22,5 +22,5 @@ class remoteAdmin:
         try:
             comm = getattr(self.simulator,str(command))(parameters)
             return comm
-        except Exception as e:
+        except:
             raise

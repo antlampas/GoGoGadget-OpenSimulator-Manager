@@ -13,10 +13,13 @@ from threading import Event
 class restConsole:
     SessionID = 0
     def __init__(self,user="",password="",url="http://127.0.0.1/",port="11000"):
-        self.url    = url
-        self.port   = port
-
-        userAndPass = {'USER': user,'PASS': password}
+        self.url      = url
+        self.port     = port
+        self.user     = user
+        self.password = password
+        self.connect()
+    def connect(self):
+        userAndPass = {'USER': self.user,'PASS': self.password}
         data = urllib.parse.urlencode(userAndPass).encode('ascii')
         request = urllib.request.Request(f"{self.url}:{self.port}/StartSession/",data,method='POST')
         try:
@@ -28,7 +31,7 @@ class restConsole:
                     self.getExecResponse()
                 else:
                     raise Exception("Unable to create session")
-        except Exception as e:
+        except:
             raise
     def exec(self,command=""):
         comm = {'ID':str(self.SessionID),'COMMAND':command}
@@ -39,7 +42,7 @@ class restConsole:
                 string = response.read()
                 doc = defusedxml.minidom.parseString(string)
                 return doc.toprettyxml(indent='    ')
-        except Exception as e:
+        except:
             raise
     def getExecResponse(self):
         request = urllib.request.Request(f"{self.url}:{self.port}/ReadResponses/{self.SessionID}",method='POST')
@@ -48,7 +51,7 @@ class restConsole:
                 string = response.read()
                 doc = defusedxml.minidom.parseString(string)
                 return doc.toprettyxml('    ')
-        except Exception as e:
+        except:
             raise
     def keepAlive(self,timeSpan):
         keepalive = True
@@ -62,7 +65,12 @@ class restConsole:
             exit.set()
         signal.signal(signal.SIGTERM,stopLoop)
         while keepalive:
-            self.exec("")
+            try:
+                self.exec("")
+            except HTTPError:
+                self.connect()
+            except:
+                raise
             sleep(timeSpan)
     def __del__(self):
         comm = {'ID':str(self.SessionID)}
@@ -73,5 +81,5 @@ class restConsole:
                 string = response.read()
                 doc = defusedxml.minidom.parseString(string)
                 return doc.toprettyxml('    ')
-        except Exception as e:
+        except:
             raise
