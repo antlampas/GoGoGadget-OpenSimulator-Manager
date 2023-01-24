@@ -19,8 +19,7 @@ class restConsole:
         self.password = password
         self.connect()
     def connect(self):
-        userAndPass = {'USER': self.user,'PASS': self.password}
-        data = urllib.parse.urlencode(userAndPass).encode('ascii')
+        data = urllib.parse.urlencode({'USER': self.user,'PASS': self.password}).encode('ascii')
         request = urllib.request.Request(f"{self.url}:{self.port}/StartSession/",data,method='POST')
         try:
             with urllib.request.urlopen(request) as response:

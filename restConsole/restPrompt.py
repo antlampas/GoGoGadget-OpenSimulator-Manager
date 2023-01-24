@@ -6,6 +6,8 @@ import sys
 import os
 import re
 import signal
+import urllib.request
+import urllib.parse
 
 from threading import Event
 from multiprocessing import Process
@@ -43,8 +45,8 @@ def mainLoop():
                 value = prettifier.prettify()
                 print(value,end='')
         except urllib.error.HTTPError:
-                self.connect()
-                reconnected = True
+            console.connect()
+            reconnected = True
         except Exception as e:
             print(str(e))
             sys.exit(1)
@@ -67,14 +69,14 @@ except Exception as e:
     print(str(e))
     sys.exit(1)
 
-ka = Process(target=console.keepAlive,args=(30,))
+# ka = Process(target=console.keepAlive,args=(30,))
 ############################ End Initialization ###############################
 
 ################################# Main Loop ###################################
-ka.start()
+# ka.start()
 mainLoop()
-os.kill(ka.pid,signal.SIGTERM)
-ka.join()
+# os.kill(ka.pid,signal.SIGTERM)
+# ka.join()
 print("Quitting...")
 sys.exit(0)
 ############################### End Main Loop #################################
