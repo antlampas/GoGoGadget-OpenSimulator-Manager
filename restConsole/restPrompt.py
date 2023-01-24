@@ -19,9 +19,13 @@ def sleep(timeSpan):
     exit.wait(timeSpan)
 
 def mainLoop():
+    reconnected = False
     while True:
         try:
-            command = input("Prompt: ")
+            if not reconnected:
+                command = input("Prompt: ")
+            else:
+                reconnected = False
             if command == "disconnect":
                 console.__del__()
                 sleep(0.1)
@@ -38,6 +42,9 @@ def mainLoop():
                 prettifier = xmlPrettifier(response)
                 value = prettifier.prettify()
                 print(value,end='')
+        except urllib.error.HTTPError:
+                self.connect()
+                reconnected = True
         except Exception as e:
             print(str(e))
             sys.exit(1)
