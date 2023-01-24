@@ -67,7 +67,7 @@ class restConsole:
         while keepalive:
             try:
                 self.exec("")
-            except HTTPError:
+            except urllib.error.HTTPError:
                 self.connect()
             except:
                 raise
