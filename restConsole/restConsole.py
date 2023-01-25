@@ -29,7 +29,7 @@ class restConsole:
                     self.SessionID = doc.firstChild.firstChild.firstChild.nodeValue
                     self.getExecResponse()
                 else:
-                    raise Exception("Unable to create session")
+                    raise Exception("Unable to create session: Session ID not found")
         except:
             raise
     def exec(self,command=""):

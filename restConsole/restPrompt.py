@@ -39,7 +39,6 @@ def mainLoop():
                 break
             else:
                 status = console.exec(command)
-                console.exec("")
                 response = console.getExecResponse()
                 prettifier = xmlPrettifier(response)
                 value = prettifier.prettify()
