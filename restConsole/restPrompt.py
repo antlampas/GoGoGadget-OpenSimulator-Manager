@@ -9,10 +9,9 @@ import signal
 import urllib.request
 import urllib.parse
 
-from threading import Event
-from multiprocessing import Process
+from threading     import Event
 
-from restConsole import restConsole
+from restConsole   import restConsole
 from xmlPrettifier import xmlPrettifier
 
 exit = Event()
@@ -39,6 +38,7 @@ def mainLoop():
                 break
             else:
                 status = console.exec(command)
+                sleep(0.5)
                 response = console.getExecResponse()
                 prettifier = xmlPrettifier(response)
                 value = prettifier.prettify()
@@ -51,12 +51,9 @@ def mainLoop():
             sys.exit(1)
     print("Disconnecting...")
 
-def keepAlive(c,timeSpan):
-    c.keepAlive(timeSpan)
-
 ############################## Initialization #################################
 try:
-    if len(sys.argv) == 3:
+    if   len(sys.argv) == 3:
         console = restConsole(sys.argv[1],sys.argv[2])
     elif len(sys.argv) == 4:
         console = restConsole(sys.argv[1],sys.argv[2],sys.argv[3])
@@ -72,10 +69,7 @@ except Exception as e:
 ############################ End Initialization ###############################
 
 ################################# Main Loop ###################################
-# ka.start()
 mainLoop()
-# os.kill(ka.pid,signal.SIGTERM)
-# ka.join()
 print("Quitting...")
 sys.exit(0)
 ############################### End Main Loop #################################
