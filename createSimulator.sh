@@ -9,7 +9,7 @@
 #2) [GRIDNAME]
 #3) [SIMULATORNAME]
 
-if [ $# -eq 3 ]
+if [ $# -eq 4 ]
 then
     OSReleasePath="${1}"
     OSInstallBasePath="${2}"
