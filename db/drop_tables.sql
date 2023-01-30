@@ -1,0 +1,6 @@
+DROP TABLE Backups;
+DROP TABLE Estates;
+DROP TABLE Grids;
+DROP TABLE 'ROBUST Services';
+DROP TABLE Regions;
+DROP TABLE Simulators;
