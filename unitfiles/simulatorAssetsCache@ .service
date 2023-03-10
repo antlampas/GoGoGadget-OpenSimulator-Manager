@@ -9,7 +9,7 @@ Description=Persist Objects and Generate Map for %i
 User=%i
 Group=%i
 WorkingDirectory=/srv/opensimulator/managementScripts
-EnvironmentFile=/srv/opensimulator/managementScripts/%i.conf
+EnvironmentFile=/srv/opensimulator/managementScripts/conf/%i.conf
 ExecStart=/usr/bin/python3 /srv/opensimulator/managementScripts/remoteAdmin/simulatorAssetsCache.py ${address} ${port} ${password}
 KillMode=none
 
