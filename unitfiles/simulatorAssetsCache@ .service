@@ -10,7 +10,7 @@ User=%i
 Group=%i
 WorkingDirectory=/srv/opensimulator/managementScripts
 EnvironmentFile=/srv/opensimulator/managementScripts/conf/%i.conf
-ExecStart=/usr/bin/python3 /srv/opensimulator/managementScripts/remoteAdmin/simulatorAssetsCache.py ${address} ${port} ${password}
+ExecStart=/usr/bin/python3 /srv/opensimulator/managementScripts/remoteAdmin/commands/simulatorAssetsCache.py ${address} ${port} ${password}
 KillMode=none
 
 [Install]
