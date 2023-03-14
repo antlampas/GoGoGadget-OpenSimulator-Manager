@@ -9,4 +9,4 @@ Description=%i simulator restart
 ExecStart=/usr/bin/systemctl restart simulator@%i.service
 
 [Install]
-WantedBy=osgrid.target
+WantedBy=osgrid.target  
