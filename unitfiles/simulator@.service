@@ -10,7 +10,7 @@ After=mysqld.service
 [Service]
 Type=forking
 User=%i
-Group=%i
+Group=opensimulator
 PIDFile=/tmp/%i.pid
 WorkingDirectory=/srv/opensimulator/managementScripts
 EnvironmentFile=/srv/opensimulator/managementScripts/conf/%i.conf

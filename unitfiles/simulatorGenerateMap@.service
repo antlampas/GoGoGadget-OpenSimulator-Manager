@@ -7,7 +7,7 @@ Description=Persist Objects and Generate Map for %i
 
 [Service]
 User=%i
-Group=%i
+Group=opensimulator
 WorkingDirectory=/srv/opensimulator/managementScripts
 EnvironmentFile=/srv/opensimulator/managementScripts/conf/%i.conf
 ExecStart=/usr/bin/python3 /srv/opensimulator/managementScripts/remoteAdmin/commands/simulatorGenerateMap.py ${address} ${port} ${password}

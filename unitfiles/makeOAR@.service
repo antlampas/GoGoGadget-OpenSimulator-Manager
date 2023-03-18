@@ -7,7 +7,7 @@ Description=OAR for %i
 
 [Service]
 User=%i
-Group=%i
+Group=opensimulator
 WorkingDirectory=/srv/opensimulator/managementScripts
 EnvironmentFile=/srv/opensimulator/managementScripts/conf/%i.conf
 ExecStart=/usr/bin/python3 /srv/opensimulator/managementScripts/remoteAdmin/makeOAR.py ${address} ${port} ${password} ${regionName} "/var/opensimulator/backups/OARs/${grid}/"

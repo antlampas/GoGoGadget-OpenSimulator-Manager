@@ -30,7 +30,7 @@ if [[ -z $tmux_pid ]]
 then
     tmux start-server
     tmux new-session -d -s ${gridName} -n ${simulatorName} "cd ${gridBasePath}/simulators/${simulatorName}/bin && ./opensim.sh"
-    PID=$( pgrep tmux -G $simulatorName )
+    PID=$( pgrep tmux -U $simulatorName )
     touch /tmp/${simulatorName}.pid
     echo ${PID} > /tmp/${simulatorName}.pid
     exit 0
