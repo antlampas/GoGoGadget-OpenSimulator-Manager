@@ -16,7 +16,17 @@ else:
 
 ra = remoteAdmin(f"{simAddr}",f"{simPort}")
 
-persistAssets = ra.command("admin_console_command",{'password':f'{simPasswd}','command':'backup'})
+sleep(0.01)
+
+retry = True
+while retry:
+    try:
+        persistAssets = ra.command("admin_console_command",{'password':f'{simPasswd}','command':'backup'})
+    except:
+        retry = True
+    else:
+        retry = False
+    sleep(0.01)
 
 if persistAssets is not AttributeError:
     print(persistAssets)

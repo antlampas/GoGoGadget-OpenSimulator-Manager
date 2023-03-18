@@ -16,7 +16,17 @@ else:
 
 ra = remoteAdmin(f"{simAddr}",f"{simPort}")
 
-generateMap = ra.command("admin_console_command",{'password':f'{simPasswd}','command':'generate map'})
+sleep(0.01)
+
+retry = True
+while retry:
+    try:
+        generateMap = ra.command("admin_console_command",{'password':f'{simPasswd}','command':'generate map'})
+    except:
+        retry = True
+    else:
+        retry = False
+    sleep(0.01)
 
 if generateMap is not AttributeError:
     print(generateMap)

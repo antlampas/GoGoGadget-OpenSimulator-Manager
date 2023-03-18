@@ -16,7 +16,17 @@ else:
 
 ra = remoteAdmin(f"{simAddr}",f"{simPort}")
 
-clearCache = ra.command("admin_console_command",{'password':f'{simPasswd}','command':'fcache assets'})
+sleep(0.01)
+
+retry = True
+while retry:
+    try:
+        clearCache = ra.command("admin_console_command",{'password':f'{simPasswd}','command':'fcache assets'})
+    except:
+        retry = True
+    else:
+        retry = False
+    sleep(0.01)
 
 if clearCache is not AttributeError:
     print(clearCache)

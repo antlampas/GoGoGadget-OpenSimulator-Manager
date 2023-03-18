@@ -16,7 +16,17 @@ else:
 
 ra = remoteAdmin(f"{simAddr}",f"{simPort}")
 
-shutdown = ra.command("admin_shutdown",{'password':f'{simPasswd}'})
+sleep(0.01)
+
+retry = True
+while retry:
+    try:
+        shutdown = ra.command("admin_shutdown",{'password':f'{simPasswd}'})
+    except:
+        retry = True
+    else:
+        retry = False
+    sleep(0.01)
 
 if shutdown is not AttributeError:
     print(shutdown)
