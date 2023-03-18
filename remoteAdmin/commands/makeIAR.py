@@ -3,6 +3,9 @@
 #This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 import sys
+
+from time import sleep
+
 from remoteAdmin import remoteAdmin
 
 if len(sys.argv) == 8:
@@ -19,7 +22,15 @@ else:
 
 ra = remoteAdmin(f"{simAddr}",f"{simPort}")
 
-iar = ra.command("admin_console_command",{'password':f'{simPasswd}','command':f'save iar {userName} "{inventoryPath}" {userPasswd} "{archivePath}" '})
+retry = True
+while retry:
+    try:
+        iar = ra.command("admin_console_command",{'password':f'{simPasswd}','command':f'save iar {userName} "{inventoryPath}" {userPasswd} "{archivePath}" '})
+    except:
+        retry = True
+    else:
+        retry = False
+    sleep(0.01)
 
 if oar is not AttributeError:
     print(iar)

@@ -4,6 +4,8 @@
 
 import sys
 
+from time import sleep
+
 from remoteAdmin import remoteAdmin
 
 if len(sys.argv) == 4:
