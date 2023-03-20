@@ -32,4 +32,3 @@ if not Path(gridBasePath+'/simulators/'+simulatorName).is_dir():
 
 tmuxServer = libtmux.Server()
 tmuxServer.new_session(session_name=simulatorName,start_directory=gridBasePath+'/simulators/'+simulatorName+'/bin',window_name=simulatorName.capitalize(),window_command='opensim.sh',attach=False)
-print(tmuxServer.sessions)
