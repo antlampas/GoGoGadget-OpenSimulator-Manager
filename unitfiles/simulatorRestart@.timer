@@ -7,7 +7,6 @@ Description=Timer for restart %i simulator
 
 [Timer]
 Unit=simulatorRestart@%i.service
-OnCalendar=02:00:00
 
 [Install]
 WantedBy=osgrid.target

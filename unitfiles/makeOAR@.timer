@@ -7,7 +7,6 @@ Description=Timer for making OAR for %i
 
 [Timer]
 Unit=makeOAR@%i.service
-OnCalendar=04:00
 
 [Install]
 WantedBy=osgrid.target

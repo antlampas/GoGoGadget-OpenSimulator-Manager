@@ -7,7 +7,6 @@ Description=Timer for persist objects and generate map for %i
 
 [Timer]
 Unit=simulatorGenerateMap@%i.service
-OnCalendar=12..23:15/30
 
 [Install]
 WantedBy=osgrid.target
