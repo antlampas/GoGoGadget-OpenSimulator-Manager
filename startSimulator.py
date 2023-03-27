@@ -4,6 +4,7 @@
 
 import sys
 import libtmux
+import psutil
 
 from pathlib import Path
 
@@ -28,6 +29,14 @@ if not Path(gridBasePath+'/simulators/'+simulatorName).is_dir():
     sys.exit("Simulator path doesn't exist")
 
 tmuxServer = libtmux.Server()
+
+for process in psutil.process_iter():
+    try:
+        if process.username() == simulatorName:
+            if "tmux" in process.name().lower():
+                pid = process.pid
+    except:
+        pass
 
 try:
     tmuxServer.new_session(session_name=simulatorName,start_directory=gridBasePath+'/simulators/'+simulatorName+'/bin',window_name=simulatorName.capitalize(),window_command='opensim.sh',attach=False)
