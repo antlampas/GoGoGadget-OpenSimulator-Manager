@@ -52,25 +52,6 @@ class restConsole:
                 return doc.toprettyxml('    ')
         except:
             raise
-    def keepAlive(self,timeSpan):
-        keepalive = True
-        exit = Event()
-        def sleep(timeSpan):
-            nonlocal exit
-            exit.wait(timeSpan)
-        def stopLoop(signum,frame):
-            nonlocal keepalive
-            keepalive = False
-            exit.set()
-        signal.signal(signal.SIGTERM,stopLoop)
-        while keepalive:
-            try:
-                self.exec("")
-            except urllib.error.HTTPError:
-                self.connect()
-            except:
-                raise
-            sleep(timeSpan)
     def __del__(self):
         comm = {'ID':str(self.SessionID)}
         data = urllib.parse.urlencode(comm).encode('ascii')
