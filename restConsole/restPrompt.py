@@ -3,9 +3,6 @@
 #This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 import sys
-import os
-import re
-import signal
 import urllib.request
 import urllib.parse
 
@@ -43,9 +40,12 @@ def mainLoop():
                 prettifier = xmlPrettifier(response)
                 value = prettifier.prettify()
                 print(value,end='')
+                sleep(0.1)
         except urllib.error.HTTPError:
             console.connect()
             reconnected = True
+        except TimeoutExpired:
+            console.getExecResponse()
         except Exception as e:
             print(str(e))
             sys.exit(1)
