@@ -18,7 +18,8 @@ class configParser:
     def getConfiguration(self):
         configUnitStart = re.compile('^\[.*\]$')
         deactivatedOption = re.compile('^;{1,1}')
-        comment = re.compile('^;{2,2}')
+        comment = re.compile('^;{2,2}|;#')
+        optionValidBeginning = re.compile('^[a-zA-Z]')
         with open(self.filename) as configFile:
             unitName = ""
             for line in configFile:
@@ -26,24 +27,44 @@ class configParser:
                 if configUnitStart.match(option):
                     unitName = option[1:-1]
                     self.configuration[unitName] = {}
+                elif comment.match(option) or option == "":
+                    continue
                 elif deactivatedOption.match(option):
                     if unitName == "":
                         continue
                     else:
-                        assignmentPosition = option.find("=")
-                        if assignmentPosition > 0:
-                            activatedOption = option[1:].strip()
-                            optionName = activatedOption[:assignmentPosition-2].strip()
-                            value = option[assignmentPosition+1:].strip()
-                            self.configuration[unitName][optionName] = value
-                elif comment.match(option) or option == "":
-                    continue
+                        activatedOption = option[1:].strip()
+                        if optionValidBeginning.match(activatedOption):
+                            assignmentPosition = activatedOption.find("=")
+                            if assignmentPosition > 0:
+                                optionName = activatedOption[:assignmentPosition].strip()
+                                if assignmentPosition < len(activatedOption):
+                                    value = activatedOption[assignmentPosition+1:].strip()
+                                else:
+                                    value = ""
+                                if optionName in self.configuration[unitName].keys():
+                                    if type(self.configuration[unitName][optionName]) is list:
+                                        self.configuration[unitName][optionName].append(value)
+                                    else:
+                                        optionsList = [self.configuration[unitName][optionName]]
+                                        optionsList.append(value)
+                                        self.configuration[unitName][optionName] = optionsList
+                                else:
+                                    self.configuration[unitName][optionName] = str(value)
                 else:
                     if unitName == "":
                         continue
                     else:
                         assignmentPosition = option.find("=")
                         if assignmentPosition > 0:
-                            optionName = option[:assignmentPosition-1].strip()
+                            optionName = option[:assignmentPosition].strip()
                             value = option[assignmentPosition+1:].strip()
-                            self.configuration[unitName][optionName] = value
+                            if optionName in self.configuration[unitName].keys():
+                                if type(self.configuration[unitName][optionName]) is list:
+                                    self.configuration[unitName][optionName].append(value)
+                                else:
+                                    optionsList = [self.configuration[unitName][optionName]]
+                                    optionsList.append(value)
+                                    self.configuration[unitName][optionName] = optionsList
+                            else:
+                                self.configuration[unitName][optionName] = str(value)
