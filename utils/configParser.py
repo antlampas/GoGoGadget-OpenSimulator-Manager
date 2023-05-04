@@ -5,7 +5,8 @@ from pathlib import Path
 
 class configParser:
     filename = ""
-    configuration = {}
+    activeConfiguration = {}
+    inactiveConfiguration = {}
     def __init__(self,filename):
         filePath = Path(str(filename))
         if filePath.exists():
@@ -26,31 +27,32 @@ class configParser:
                 option = line.strip()
                 if configUnitStart.match(option):
                     unitName = option[1:-1]
-                    self.configuration[unitName] = {}
+                    self.activeConfiguration[unitName] = {}
+                    self.inactiveConfiguration[unitName] = {}
                 elif comment.match(option) or option == "":
                     continue
                 elif deactivatedOption.match(option):
                     if unitName == "":
                         continue
                     else:
-                        activatedOption = option[1:].strip()
-                        if optionValidBeginning.match(activatedOption):
-                            assignmentPosition = activatedOption.find("=")
+                        decommentedOption = option[1:].strip()
+                        if optionValidBeginning.match(decommentedOption):
+                            assignmentPosition = decommentedOption.find("=")
                             if assignmentPosition > 0:
-                                optionName = activatedOption[:assignmentPosition].strip()
-                                if assignmentPosition < len(activatedOption):
-                                    value = activatedOption[assignmentPosition+1:].strip()
+                                optionName = decommentedOption[:assignmentPosition].strip()
+                                if assignmentPosition < len(decommentedOption):
+                                    value = decommentedOption[assignmentPosition+1:].strip()
                                 else:
                                     value = ""
-                                if optionName in self.configuration[unitName].keys():
-                                    if type(self.configuration[unitName][optionName]) is list:
-                                        self.configuration[unitName][optionName].append(value)
+                                if optionName in self.inactiveConfiguration[unitName].keys():
+                                    if type(self.inactiveConfiguration[unitName][optionName]) is list:
+                                        self.inactiveConfiguration[unitName][optionName].append(value)
                                     else:
-                                        optionsList = [self.configuration[unitName][optionName]]
+                                        optionsList = [self.inactiveConfiguration[unitName][optionName]]
                                         optionsList.append(value)
-                                        self.configuration[unitName][optionName] = optionsList
+                                        self.inactiveConfiguration[unitName][optionName] = optionsList
                                 else:
-                                    self.configuration[unitName][optionName] = str(value)
+                                    self.inactiveConfiguration[unitName][optionName] = str(value)
                 else:
                     if unitName == "":
                         continue
@@ -59,12 +61,12 @@ class configParser:
                         if assignmentPosition > 0:
                             optionName = option[:assignmentPosition].strip()
                             value = option[assignmentPosition+1:].strip()
-                            if optionName in self.configuration[unitName].keys():
-                                if type(self.configuration[unitName][optionName]) is list:
-                                    self.configuration[unitName][optionName].append(value)
+                            if optionName in self.activeConfiguration[unitName].keys():
+                                if type(self.activeConfiguration[unitName][optionName]) is list:
+                                    self.activeConfiguration[unitName][optionName].append(value)
                                 else:
-                                    optionsList = [self.configuration[unitName][optionName]]
+                                    optionsList = [self.activeConfiguration[unitName][optionName]]
                                     optionsList.append(value)
-                                    self.configuration[unitName][optionName] = optionsList
+                                    self.activeConfiguration[unitName][optionName] = optionsList
                             else:
-                                self.configuration[unitName][optionName] = str(value)
+                                self.activeConfiguration[unitName][optionName] = str(value)
