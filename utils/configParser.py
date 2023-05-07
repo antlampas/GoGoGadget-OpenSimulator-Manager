@@ -20,9 +20,11 @@ class configParser:
                configuration file. Its a "hierarchical" dictionary and the
                key-value pair meaning is SectionName-OptionDictionary. The
                key-value pair meaning is OptionName-value
-    deactivatedConfiguration = here are all those options marked as
-               "deactivated", i.e. lines beginning with a single colon (;). The
+    inactiveConfiguration = here are all those options marked as "deactivated"
+               or "defaulted" i.e. lines beginning with a single colon (;). The
                dictionary structure is the same as the activeConfiguration
+    activeConfiguration = here are all the actual configured lines, i.e. all
+               the lines not beginning with a single colon (;).
     """
     filename = ""
     activeConfiguration = {}
