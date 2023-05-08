@@ -5,10 +5,20 @@
 import defusedxml.minidom
 
 class xmlPrettifier:
+    """XML Prettifier
+
+    A XML prettyfier: it basically converts the XML format in plain text, just
+    removing the XML tags.
+    """
     currentDocument=""
     currentNode=""
     currenNodeAttributes={}
     def __init__(self,document=""):
+        """Constructor
+
+        document = XML string: the XML document the Prettifier should be initialized
+        """
+        if document == "": raise Exception("No XML given")
         self.getDocument(document)
         self.getNode(self.currentDocument.firstChild.nodeName,0)
     def getDocument(self,document):
@@ -25,6 +35,12 @@ class xmlPrettifier:
         else:
             return None
     def prettify(self):
+        """Prettify
+
+        This makes the actual work: reads the XML document node by node and
+        clears all the tags. The output format is the content of each note, one
+        content per line
+        """
         response = ""
         if self.currentNode is not None:
             if self.currentNode.hasChildNodes():

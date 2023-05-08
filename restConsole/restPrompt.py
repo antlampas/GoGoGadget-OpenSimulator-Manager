@@ -2,6 +2,11 @@
 #Date: 2023-01-04
 #This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
+"""REST Prompt
+
+A command-line interactive prompt for the OpenSimulator REST Console
+"""
+
 import sys
 import urllib.request
 import urllib.parse
@@ -14,9 +19,17 @@ from xmlPrettifier import xmlPrettifier
 exit = Event()
 
 def sleep(timeSpan):
+    """Sleep
+
+    An utility function for multithreaded sleep
+    """
     exit.wait(timeSpan)
 
 def mainLoop():
+    """Main Loop
+
+    This is the main loop waiting for user input and prints the REST Console output
+    """
     reconnected = False
     while True:
         try:
