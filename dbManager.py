@@ -13,9 +13,26 @@
 # password = (MYSQL ONLY) MySQL database password
 
 class dbManager:
+    """Database Manager
+
+    This class manages the GoGo Gadget OpenSimulator Manager internal database,
+    needed to track all registered Grids and Simulator.
+    
+    The internal database is meant to simplify the tracking of all the data
+    about the Grids and Simulators, such as Grids names, Grids paths, Grids
+    administrators usernames, Simulators names, Simulators paths, Simulators
+    owners usernames, Simulator-Grid binds.
+
+    Specifically, this class acts as an uniform interface to the underlying
+    DBMS, hiding the underlying complexity, as an interface should work
+    """
     dbName = ""
     dbPath = ""
     def __init__(self,dbType="sqlite",dbName="",dbPath="",host="127.0.0.1",port="3306",username="",password=""):
+        """Constructor
+
+        Initializes the underlying DBMS with the correct connection data
+        """
         self.dbName = dbName
         if dbType == "sqlite":
             import sqlite3 as dbInterface
@@ -29,8 +46,18 @@ class dbManager:
             print("Database type not supported or typo in database type name")
         self.dbCursor = self.dbConnection.cursor()
     def createDB(self,dbName=""):
-        self.dbCursor.execute("CREATE DATABASE " + dbName)
-    def backupDB(self,dbName="",savePath=""): pass
-    def dropDB(self,dbName=""): pass
+        """CreateDB
 
-db = dbManager(dbType="mysql")
+        Actually creates the database
+        """
+        self.dbCursor.execute("CREATE DATABASE " + dbName)
+    def backupDB(self,dbName="",savePath=""):
+        """BackupDB
+        
+        """
+        pass
+    def dropDB(self,dbName=""):
+        """DropDB
+
+        """
+        pass

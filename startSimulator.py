@@ -4,7 +4,7 @@
 
 """Start Simulator
 
-
+This creates a Tmux session and starts the simulator in it.
 """
 
 from pathlib import Path
@@ -12,6 +12,10 @@ from sys import exit,argv
 import libtmux 
 import psutil
 
+#Check arguments:
+#- Grid Base Path
+#- Grid Name
+#- Simulator Name
 if len(argv)==4:
     gridBasePath  = argv[1]
     gridName      = argv[2]
@@ -20,6 +24,7 @@ if len(argv)==4:
 else:
     exit("Wrong number of arguments")
 
+#Validate arguments
 if not Path(gridBasePath).is_dir():
     exit("Grid base path provided doesn't exist")
 
@@ -32,8 +37,8 @@ if not simulatorName.isalnum():
 if not Path(gridBasePath+'/simulators/'+simulatorName).is_dir():
     exit("Simulator path doesn't exist")
 
+#Check if the simulator is not running yet
 pid = -1
-
 for process in psutil.process_iter():
     try:
         if process.username() == simulatorName:
@@ -43,6 +48,7 @@ for process in psutil.process_iter():
     except:
         pass
 
+#If the simulator is not running, start it
 if pid == -1:
     try:
         tmuxServer = libtmux.Server()
