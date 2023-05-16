@@ -10,6 +10,8 @@ import signal
 
 from threading import Event
 
+#THOUGHT: i wonder if there's a more elegant way to do this
+
 class restConsole:
     """REST Console interface
     
