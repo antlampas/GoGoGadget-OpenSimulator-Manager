@@ -18,17 +18,25 @@ class createBaseRobustDirectorystructure:
         else:
             self.errors.append("No grid name provided")
         
-        if self.gridPath.exists():     self.errors.append(gridName + " base path already exists")
-        if self.gridLogPath.exists():  self.errors.append(gridName + " base log path already exists")
-        if self.gridConfPath.exists(): self.errors.append(gridName + " base configuration path already exists")
+        if not self.gridPath.exists():     self.errors.append(gridName + " base path doesn't exists")
+        if not self.gridLogPath.exists():  self.errors.append(gridName + " base log path doesn't exists")
+        if not self.gridConfPath.exists(): self.errors.append(gridName + " base configuration path doesn't exists")
 
         if not len(self.errors):
             try:
-                if not len(services):
-                    self.gridPath.mkdir()
-                    self.gridLogPath.mkdir()
-                    self.gridConfPath.mkdir()
+                self.robustPath = str(self.gridPath) + "/robust"
+                if not self.robustPath.exists():
+                    self.robustPath.mkdir()
+                if len(services):
+                    for service in services:
+                        path = Path(str(self.robustPath) + service)
+                        if not path.exists():
+                            path.mkdir()
+                        else:
+                            self.errors.append(service + " path already exists")
             except:
                 raise
         else:
             raise Exception(self.errors)
+        
+        if len(self.errors): raise Exception(self.errors)
