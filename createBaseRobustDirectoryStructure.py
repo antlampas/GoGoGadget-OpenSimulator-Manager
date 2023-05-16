@@ -5,6 +5,7 @@
 from pathlib import Path
 
 #TODO: test and debug
+#TODO: add the tode to save the paths in the local database and in the configuration file
 
 class createBaseRobustDirectorystructure:
     errors = []
