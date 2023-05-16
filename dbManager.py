@@ -26,19 +26,24 @@ class dbManager:
     Specifically, this class acts as an uniform interface to the underlying
     DBMS, hiding the underlying complexity, as an interface should work
     """
+    dbType = ""
     dbName = ""
     dbPath = ""
+    host   = ""
+    port   = 0
+
     def __init__(self,dbType="sqlite",dbName="",dbPath="",host="127.0.0.1",port="3306",username="",password=""):
         """Constructor
 
         Initializes the underlying DBMS with the correct connection data
         """
         self.dbName = dbName
-        if dbType == "sqlite":
+        self.dbType = dbType
+        if self.dbType == "sqlite":
             import sqlite3 as dbInterface
             self.dbInterface  = dbInterface
-            self.dbConnection = self.dbInterface.connect(self.dbName)
-        elif dbType == "mysql":
+            self.dbConnection = self.dbInterface.connect(self.path + self.dbName)
+        elif self.dbType == "mysql":
             import mysql.connector as dbInterface
             self.dbInterface  = dbInterface
             self.dbConnection = self.dbInterface.connect(user=username,password=password,host=host,port=port,database=self.dbName)
@@ -46,18 +51,24 @@ class dbManager:
             print("Database type not supported or typo in database type name")
         self.dbCursor = self.dbConnection.cursor()
     def createDB(self,dbName=""):
-        """CreateDB
+        """Create database
 
         Actually creates the database
         """
-        self.dbCursor.execute("CREATE DATABASE " + dbName)
+        self.dbCursor.execute("CREATE DATABASE " + dbName + ";")
     def backupDB(self,dbName="",savePath=""):
-        """BackupDB
-        
+        """Backup database
         """
         pass
     def dropDB(self,dbName=""):
-        """DropDB
-
+        """Drop database
         """
-        pass
+        self.dbCursor.execute("DROP DATABASE " + dbName + ";")
+    def createTable(self,tableName="",coloumnsNames=""):
+        """Create Table
+        """
+        self.dbCursor.execute("CREATE TABLE " + tableName + " (" + coloumnsNames + ");")
+    def dropTable(self,tableName=""):
+        """Drop Table
+        """
+        self.dbCursor.execute("DROP TABLE " + tableName + ";")
