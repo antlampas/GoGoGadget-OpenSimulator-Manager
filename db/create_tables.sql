@@ -6,7 +6,8 @@ This work is licensed under the Creative Commons Attribution 4.0 International L
 
 CREATE TABLE Grids (
     GridName varchar(128) NOT NULL,
-    PRIMARY KEY(GridName),
+    GridPath varchar(256) NOT NULL,
+    PRIMARY KEY(GridName)
 );
 CREATE TABLE 'ROBUST Services' (
     Grid varchar(128) REFERENCES Grids(Name),
