@@ -4,6 +4,8 @@
 
 import defusedxml.minidom
 
+#TODO: review the code to use the xml.dom library in a better and optimized way
+
 class xmlPrettifier:
     """XML Prettifier
 

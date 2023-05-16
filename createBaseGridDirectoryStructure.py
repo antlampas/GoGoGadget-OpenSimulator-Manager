@@ -4,6 +4,8 @@
 
 from pathlib import Path
 
+#TODO: test and debug
+
 class createBaseGridDirectorystructure:
     errors = []
     def __init__(self,basePath="",baseLogPath="",baseConfPath="",gridName="",services=[]):

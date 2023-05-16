@@ -7,6 +7,8 @@
 A command-line interactive prompt for the OpenSimulator REST Console
 """
 
+#TODO: review the design to "decouple" the prompt from the output
+
 import sys
 import urllib.request
 import urllib.parse

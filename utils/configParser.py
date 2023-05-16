@@ -7,6 +7,8 @@ import re
 from sys import argv
 from pathlib import Path
 
+#TODO: test and debug
+
 class configParser:
     """Configuration Parser
 
