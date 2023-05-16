@@ -56,7 +56,9 @@ class createBaseDirecotryStructure:
             if not path.is_absolute():
                 self.errors.append(path + " is not absolute")
                 continue
+
             path.joinpath('opensimulator')
+            
             if path.exists():
                 errors.append(str(path) + " already exists")
             else:
@@ -65,4 +67,4 @@ class createBaseDirecotryStructure:
                 except OSError as e:
                     errors.append("Can't create " + path + " because " +str(e))
         if len(errors):
-            raise self.errors
+            raise Exception(self.errors)

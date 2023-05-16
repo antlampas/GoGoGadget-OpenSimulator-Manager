@@ -1,6 +1,6 @@
 from pathlib import Path
 
-class createBaseRobustDirectorystructure:
+class createBaseGridDirectorystructure:
     errors = []
     def __init__(self,basePath="",baseLogPath="",baseConfPath="",gridName="",services=[]):
         if basepath:     self.bPath = Path(basePath)      else: self.errors.append("No base path provided")
