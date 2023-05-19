@@ -4,8 +4,9 @@
 
 import pathlib
 
-#TODO: test and debug
-#TODO: add the tode to save the paths in the local database and in the configuration file
+#TODO: test
+#TODO: debug
+#TODO: add the code to save the paths in the local database and in the configuration file
 
 class createBaseDirecotryStructure:
     """Create Base Directory Structure
