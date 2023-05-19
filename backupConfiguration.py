@@ -5,7 +5,6 @@
 from pathlib import Path
 import re
 
-
 class backupConfiguration:
     """Backup Configuration
 
@@ -13,13 +12,60 @@ class backupConfiguration:
     instance and it will copy it to the given backup path
     """
     configurationFiles = []
+    errors = []
     def __init__(self,basePath="",gridName="",simulatorName="",robustServiceName=""):
         """Constructor
 
         """
         validPath = re.compile("^\/(?:[^/\0]+\/)*[^/\0]$")
+        validName = re.compile("^[[:alnum:]]+$")
+        
+        # Validate base path
+        if len(basePath):
+            if validPath.match(basePath):
+                self.bPath  = Path(basePath)
+            else:
+                self.errors.append("Invalid path")
+        else:
+            self.errors.append("No base path provided")
+        # Validate grid name
+        if len(gridName):
+            if validName.match(gridName):
+                self.gName  = gridName
+            else:
+                self.errors.append("Invalid grid name")
+        else:
+            self.errors.append("No grid name provided")
+        # Validate simulator name
+        if len(simulatorName):
+            if validName.match(simulatorName):
+                self.sName = simulatorName
+            else:
+                self.errors.append("Invalid simulator name")
+        else:
+            self.sName = ""
+        # Validate robust service name
+        if len(robustServiceName):
+            if validName.match(robustServiceName):
+                self.rsName = robustServiceName
+            else:
+                self.errors.append("Invalid robust service name")
+        else:
+            self.rsName = ""
 
-        self.bPath  = Path(basePath)
-        self.gName  = Path(gridName)
-        self.sName  = Path(SimulatorName)
-        self.rsName = Path(robustServiceName)
+        # Check if at least simulator name ro robust service name is not empty
+        if not (len(self.sName) and len(self.rsName)):
+            self.errors.append("No simulator and no robust service name provided")
+
+        # Actually start the dirty work
+        if not len(self.errors):
+            if len(self.sName):
+                self.simulatorPath = Path(str(self.bPath) + "/" + self.gridName + "/" + self.sName)
+            else:
+                self.simulatorPath = Path(str(self.bPath) + "/" + self.gridName)
+            if len(self.rsName):
+                self.robustServiceName = Path(str(self.bPath) + "/" + self.gridName + "/" + self.rsName)
+            else:
+                self.robustServiceName = Path(str(self.bPath) + "/" + self.gridName)
+        else:
+            raise Exception(self.errors)

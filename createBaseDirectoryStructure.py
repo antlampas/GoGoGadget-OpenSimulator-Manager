@@ -63,11 +63,11 @@ class createBaseDirecotryStructure:
             path.joinpath('opensimulator')
             
             if path.exists():
-                errors.append(str(path) + " already exists")
+                self.errors.append(str(path) + " already exists")
             else:
                 try:
                     path.mkdir(chmod=0o755):
                 except OSError as e:
-                    errors.append("Can't create " + path + " because " +str(e))
+                    self.errors.append("Can't create " + path + " because " +str(e))
         if len(errors):
             raise Exception(self.errors)
