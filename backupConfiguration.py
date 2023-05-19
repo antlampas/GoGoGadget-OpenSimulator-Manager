@@ -6,6 +6,9 @@ from pathlib import Path
 import shutil
 import re
 
+#TODO: test
+#TODO: debug
+
 class backupConfiguration:
     """Backup Configuration
 
@@ -21,7 +24,7 @@ class backupConfiguration:
         validPath = re.compile("^\/(?:[^/\0]+\/)*[^/\0]$")
         validName = re.compile("^[[:alnum:]]+$")
         
-        # Validate base backup path
+        # Validate paths
         if len(backupBasePath):
             if validPath.match(backupBasePath):
                 self.backupBasePath  = Path(backupBasePath)
@@ -29,7 +32,6 @@ class backupConfiguration:
                 self.errors.append("Invalid backup path")
         else:
             self.errors.append("No backup path provided")
-        # Validate base path
         if len(basePath):
             if validPath.match(basePath):
                 self.basePath  = Path(basePath)
@@ -37,7 +39,7 @@ class backupConfiguration:
                 self.errors.append("Invalid base path")
         else:
             self.errors.append("No base path provided")
-        # Validate grid name
+        # Validate names
         if len(gridName):
             if validName.match(gridName):
                 self.gridName  = gridName
@@ -45,7 +47,6 @@ class backupConfiguration:
                 self.errors.append("Invalid grid name")
         else:
             self.errors.append("No grid name provided")
-        # Validate simulator name
         if len(simulatorName):
             if validName.match(simulatorName):
                 self.simulatorName = simulatorName
@@ -53,7 +54,6 @@ class backupConfiguration:
                 self.errors.append("Invalid simulator name")
         else:
             self.simulatorName = ""
-        # Validate robust service name
         if len(robustServiceName):
             if validName.match(robustServiceName):
                 self.robustServiceName = robustServiceName
