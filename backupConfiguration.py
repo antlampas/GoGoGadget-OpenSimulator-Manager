@@ -3,6 +3,7 @@
 #This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 from pathlib import Path
+import shutil
 import re
 
 class backupConfiguration:
@@ -13,25 +14,33 @@ class backupConfiguration:
     """
     configurationFiles = []
     errors = []
-    def __init__(self,basePath="",gridName="",simulatorName="",robustServiceName=""):
+    def __init__(self,backupBasePath="",basePath="",gridName="",simulatorName="",robustServiceName=""):
         """Constructor
 
         """
         validPath = re.compile("^\/(?:[^/\0]+\/)*[^/\0]$")
         validName = re.compile("^[[:alnum:]]+$")
         
+        # Validate base backup path
+        if len(backupBasePath):
+            if validPath.match(backupBasePath):
+                self.backupBasePath  = Path(backupBasePath)
+            else:
+                self.errors.append("Invalid backup path")
+        else:
+            self.errors.append("No backup path provided")
         # Validate base path
         if len(basePath):
             if validPath.match(basePath):
-                self.bPath  = Path(basePath)
+                self.basePath  = Path(basePath)
             else:
-                self.errors.append("Invalid path")
+                self.errors.append("Invalid base path")
         else:
             self.errors.append("No base path provided")
         # Validate grid name
         if len(gridName):
             if validName.match(gridName):
-                self.gName  = gridName
+                self.gridName  = gridName
             else:
                 self.errors.append("Invalid grid name")
         else:
@@ -39,33 +48,45 @@ class backupConfiguration:
         # Validate simulator name
         if len(simulatorName):
             if validName.match(simulatorName):
-                self.sName = simulatorName
+                self.simulatorName = simulatorName
             else:
                 self.errors.append("Invalid simulator name")
         else:
-            self.sName = ""
+            self.simulatorName = ""
         # Validate robust service name
         if len(robustServiceName):
             if validName.match(robustServiceName):
-                self.rsName = robustServiceName
+                self.robustServiceName = robustServiceName
             else:
                 self.errors.append("Invalid robust service name")
         else:
-            self.rsName = ""
+            self.robustServiceName = ""
 
         # Check if at least simulator name ro robust service name is not empty
-        if not (len(self.sName) and len(self.rsName)):
+        if not (len(self.simulatorName) and len(self.robustServiceName)):
             self.errors.append("No simulator and no robust service name provided")
 
-        # Actually start the dirty work
+        # Actually does the dirty work
         if not len(self.errors):
-            if len(self.sName):
-                self.simulatorPath = Path(str(self.bPath) + "/" + self.gridName + "/" + self.sName)
+            # If a simulator name is provided, use it to build the simulator
+            # path. Otherwise, put a "null path" in it. I used the "base grid
+            # path" as "null path" by convention.
+            if len(self.simulatorName):
+                self.simulatorPath = Path(str(self.basePath) + "/" + self.gridName + "/" + self.simulatorName)
             else:
-                self.simulatorPath = Path(str(self.bPath) + "/" + self.gridName)
-            if len(self.rsName):
-                self.robustServiceName = Path(str(self.bPath) + "/" + self.gridName + "/" + self.rsName)
+                self.simulatorPath = Path(str(self.basePath) + "/" + self.gridName)
+            # If a robust service name is provided, use it to build the
+            # simulator path. Otherwise, put a "null path" in it. I used the
+            # "base grid path" as "null path" by convention.
+            if len(self.robustServiceName):
+                self.robustServiceName = Path(str(self.basePath) + "/" + self.gridName + "/" + self.robustServiceName)
             else:
-                self.robustServiceName = Path(str(self.bPath) + "/" + self.gridName)
+                self.robustServiceName = Path(str(self.basePath) + "/" + self.gridName)
+            self.backupPath = Path(str(self.backupBasePath) + "/" + self.gridName)
+            if not self.simulatorPath.samepath(Path(str(self.basePath) + "/" + self.gridName)):
+                for f in self.simulatorPath.iterdir():
+                    if (f.is_file() and (f.suffix == "ini" or f.suffix == "config")) or
+                       (f.is_dir() and (f.name == "config-include" or f.name == "Regions")):
+                        shutil.copy(str(f),str(backupPath)+f.name) #TODO: Temporary. Check if there's a way to do this with pathlib
         else:
             raise Exception(self.errors)
