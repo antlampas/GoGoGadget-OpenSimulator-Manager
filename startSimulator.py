@@ -24,6 +24,8 @@ if len(argv)==4:
 else:
     exit("Wrong number of arguments")
 
+#TODO: make better validations, e.g. using regular expressions
+
 #Validate arguments
 if not Path(gridBasePath).is_dir():
     exit("Grid base path provided doesn't exist")

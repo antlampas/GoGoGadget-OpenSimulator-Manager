@@ -4,6 +4,10 @@
 
 import pathlib,dbManager
 
+#TODO: implement
+#TODO: test
+#TODO: debug
+
 class createSimulator:
     """Create Simulator
 

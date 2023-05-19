@@ -4,6 +4,10 @@
 
 import pathlib,mysql.connector,sqlite3
 
+#TODO: implement
+#TODO: test
+#TODO: debug
+
 class backupDatabase:
     """Backup Database
 
