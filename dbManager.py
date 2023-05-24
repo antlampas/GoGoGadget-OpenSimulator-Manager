@@ -17,6 +17,7 @@
 #TODO: debug
 
 from pathlib import Path
+from shutils import copy2
 
 class dbManager:
     """Database Manager
@@ -66,8 +67,9 @@ class dbManager:
     def backupDB(self,dbName="",savePath=""):
         """Backup database
         """
+        backupPath = Path(savePath)
         if self.dbType == "sqlite":
-            pass
+            copy2(self.sqlitePath,backupPath)
         elif self.dbType == "mysql":
             pass
     def dropDB(self,dbName=""):
