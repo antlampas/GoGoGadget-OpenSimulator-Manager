@@ -16,6 +16,8 @@
 #TODO: test
 #TODO: debug
 
+from pathlib import Path
+
 class dbManager:
     """Database Manager
 
@@ -45,14 +47,15 @@ class dbManager:
         self.dbType = dbType
         if self.dbType == "sqlite":
             import sqlite3 as dbInterface
+            self.sqlitePath = Path(self.path + self.dbName)
             self.dbInterface  = dbInterface
-            self.dbConnection = self.dbInterface.connect(self.path + self.dbName)
+            self.dbConnection = self.dbInterface.connect(str(self.sqlitePath))
         elif self.dbType == "mysql":
             import mysql.connector as dbInterface
             self.dbInterface  = dbInterface
             self.dbConnection = self.dbInterface.connect(user=username,password=password,host=host,port=port,database=self.dbName)
         else:
-            print("Database type not supported or typo in database type name")
+            print("Database type not supported or typo in database type")
         self.dbCursor = self.dbConnection.cursor()
     def createDB(self,dbName=""):
         """Create database
@@ -63,7 +66,10 @@ class dbManager:
     def backupDB(self,dbName="",savePath=""):
         """Backup database
         """
-        pass
+        if self.dbType == "sqlite":
+            pass
+        elif self.dbType == "mysql":
+            pass
     def dropDB(self,dbName=""):
         """Drop database
         """
