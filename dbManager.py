@@ -12,7 +12,6 @@
 # username = (MYSQL ONLY) MySQL database username
 # password = (MYSQL ONLY) MySQL database password
 
-#TODO: implement
 #TODO: test
 #TODO: debug
 
