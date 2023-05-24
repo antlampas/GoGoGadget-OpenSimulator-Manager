@@ -68,10 +68,16 @@ class dbManager:
         """Backup database
         """
         backupPath = Path(savePath)
-        if self.dbType == "sqlite":
-            copy2(self.sqlitePath,backupPath)
-        elif self.dbType == "mysql":
-            pass
+        if backupPath.exists():
+            if backupPath.is_dir():
+                if self.dbType == "sqlite":
+                    copy2(self.sqlitePath,backupPath)
+                elif self.dbType == "mysql":
+                    pass
+            else:
+                raise Exception("Provided backup path is not a directory")
+        else:
+            raise Exception("Provided backup path doesn't exist")
     def dropDB(self,dbName=""):
         """Drop database
         """
