@@ -16,21 +16,13 @@
 #TODO: debug
 
 from pathlib import Path
-from shutils import copy2
 
 class dbManager:
     """Database Manager
 
-    This class manages the GoGo Gadget OpenSimulator Manager internal database,
-    needed to track all registered Grids and Simulator.
-    
-    The internal database is meant to simplify the tracking of all the data
-    about the Grids and Simulators, such as Grids names, Grids paths, Grids
-    administrators usernames, Simulators names, Simulators paths, Simulators
-    owners usernames, Simulator-Grid binds.
-
-    Specifically, this class acts as an uniform interface to the underlying
-    DBMS, hiding the underlying complexity, as an interface should work
+    This class acts as an uniform interface to the underlying DBMS, hiding the
+    underlying complexity, so the user don't have to worry if the underlying
+    DBMS is MySQL, MariaDB or Sqlite.
     """
     dbType = ""
     dbName = ""
@@ -41,13 +33,14 @@ class dbManager:
     def __init__(self,dbType="sqlite",dbName="",dbPath="",host="127.0.0.1",port="3306",username="",password=""):
         """Constructor
 
-        Initializes the underlying DBMS with the correct connection data
+        Initializes the underlying DBMS with the correct connection data.
         """
         self.dbName = dbName
         self.dbType = dbType
+        self.dbPath = dbPath
         if self.dbType == "sqlite":
             import sqlite3 as dbInterface
-            self.sqlitePath = Path(self.path + self.dbName)
+            self.sqlitePath = Path(self.dbPath + self.dbName)
             self.dbInterface  = dbInterface
             self.dbConnection = self.dbInterface.connect(str(self.sqlitePath))
         elif self.dbType == "mysql":
@@ -57,35 +50,23 @@ class dbManager:
         else:
             print("Database type not supported or typo in database type")
         self.dbCursor = self.dbConnection.cursor()
-    def createDB(self,dbName=""):
-        """Create database
+    def query(self,query=""):
+        response = self.dbCursor.execute(query).fetchall()
 
-        Actually creates the database
-        """
-        self.dbCursor.execute("CREATE DATABASE " + dbName + ";")
+        return response
     def backupDB(self,dbName="",savePath=""):
         """Backup database
+
+        This makes the physical backup of the database.
         """
         backupPath = Path(savePath)
         if backupPath.exists():
             if backupPath.is_dir():
                 if self.dbType == "sqlite":
-                    copy2(self.sqlitePath,backupPath)
+                    dbConnection.backup(backupPath)
                 elif self.dbType == "mysql":
                     pass
             else:
                 raise Exception("Provided backup path is not a directory")
         else:
             raise Exception("Provided backup path doesn't exist")
-    def dropDB(self,dbName=""):
-        """Drop database
-        """
-        self.dbCursor.execute("DROP DATABASE " + dbName + ";")
-    def createTable(self,tableName="",coloumnsNames=""):
-        """Create Table
-        """
-        self.dbCursor.execute("CREATE TABLE " + tableName + " (" + coloumnsNames + ");")
-    def dropTable(self,tableName=""):
-        """Drop Table
-        """
-        self.dbCursor.execute("DROP TABLE " + tableName + ";")

@@ -87,6 +87,6 @@ class backupConfiguration:
                 for f in self.simulatorPath.iterdir():
                     if (f.is_file() and (f.suffix == "ini" or f.suffix == "config")) or
                        (f.is_dir() and (f.name == "config-include" or f.name == "Regions")):
-                        shutil.copy(str(f),str(backupPath)+f.name) #TODO: Temporary. Check if there's a way to do this with pathlib
+                        shutil.copy(str(f),str(backupPath)+f.name)
         else:
             raise Exception(self.errors)
