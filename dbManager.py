@@ -52,7 +52,6 @@ class dbManager:
         self.dbCursor = self.dbConnection.cursor()
     def query(self,query=""):
         response = self.dbCursor.execute(query).fetchall()
-
         return response
     def backupDB(self,dbName="",savePath=""):
         """Backup database
