@@ -6,7 +6,7 @@ from pathlib import Path
 
 #TODO: test
 #TODO: debug
-#TODO: add the tode to save the paths in the local database and in the configuration file
+#TODO: add the code to save the paths in the local database and in the configuration file
 
 class createBaseGridDirectorystructure:
     errors = []
