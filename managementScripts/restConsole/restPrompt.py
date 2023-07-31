@@ -10,6 +10,7 @@ A command-line interactive prompt for the OpenSimulator REST Console
 #TODO: review the design to "decouple" the prompt from the output
 
 import sys
+import curses
 import urllib.request
 import urllib.parse
 
@@ -27,7 +28,7 @@ def sleep(timeSpan):
     """
     exit.wait(timeSpan)
 
-def mainLoop():
+def mainLoop(c):
     """Main Loop
 
     This is the main loop waiting for user input and prints the REST Console output
@@ -40,27 +41,27 @@ def mainLoop():
             else:
                 reconnected = False
             if command == "disconnect":
-                console.__del__()
+                c.__del__()
                 sleep(0.1)
                 break
             elif command == "quit":
-                status = console.exec("quit")
-                console.__del__()
+                status = c.exec("quit")
+                c.__del__()
                 sleep(0.1)
                 break
             else:
-                status = console.exec(command)
+                status = c.exec(command)
                 sleep(0.5)
-                response = console.getExecResponse()
+                response   = c.getExecResponse()
                 prettifier = xmlPrettifier(response)
-                value = prettifier.prettify()
+                value      = prettifier.prettify()
                 print(value,end='')
                 sleep(0.1)
         except urllib.error.HTTPError:
-            console.connect()
+            c.connect()
             reconnected = True
         except TimeoutExpired:
-            console.getExecResponse()
+            c.getExecResponse()
         except Exception as e:
             print(str(e))
             sys.exit(1)
@@ -79,11 +80,10 @@ try:
 except Exception as e:
     print(str(e))
     sys.exit(1)
-
 ############################ End Initialization ###############################
 
 ################################# Main Loop ###################################
-mainLoop()
+mainLoop(console)
 print("Quitting...")
 sys.exit(0)
 ############################### End Main Loop #################################
