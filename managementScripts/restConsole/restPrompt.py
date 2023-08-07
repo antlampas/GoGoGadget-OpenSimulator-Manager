@@ -90,7 +90,7 @@ except Exception as e:
     sys.exit(str(e))
 
 outputThread = Thread(target=tui.getOutput,args=(0.001,e),daemon=True)
-inputThread  Thread(target=tui.sendInput,args=(0.001,e),daemon=True)
+inputThread = Thread(target=tui.sendInput,args=(0.001,e),daemon=True)
 outputThread.start()
 
 eventLoop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
