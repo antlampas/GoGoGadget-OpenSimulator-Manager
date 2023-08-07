@@ -25,7 +25,7 @@ class inputText(urwid.Edit):
         super(inputText, self).keypress(size, key)
 
 class restPrompt(urwid.WidgetWrap):
-    def __init__(self,delay,queue,lock,url="http://127.0.0.1/",port=11000,user="",password=""):
+    def __init__(self,delay,queue,lock,user="",password="",url="http://127.0.0.1/",port=11000):
         self.console      = restConsole(user,password,url,port)
         self.alphanum     = re.compile('[a-zA-Z0-9]+')
         self.inputWidget  = inputText(queue,lock)
