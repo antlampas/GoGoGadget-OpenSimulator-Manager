@@ -61,11 +61,11 @@ class restPrompt(urwid.WidgetWrap):
                 self.outputWidget.set_text(self.outputWidget.get_text()[0] + response + '\n')
                 self.inputWidget.command = ''
 
+e = Event()
+q = Queue()
+l = Lock()
+
 try:
-    e = Event()
-    q = Queue()
-    l = Lock()
-    
     if   len(sys.argv) == 3:
         tui = restPrompt(1,sys.argv[1],sys.argv[2])
     elif len(sys.argv) == 4:
