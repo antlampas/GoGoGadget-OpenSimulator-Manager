@@ -66,10 +66,13 @@ class restPrompt(urwid.WidgetWrap):
                     time.sleep(0.6)
                     sys.stderr.write("Command executed. Retreiving response\n")
                     response = self.console.getExecResponse()
+                    sys.stderr.write("Response:\n" + response)
             if response != '':
                 sys.stderr.write("Writing response onscreen\n")
-                self.outputWidget.set_text(self.outputWidget.get_text()[0] + response + '\n')
-                self.inputWidget.command = ''
+                prettifier = xmlPrettifier(response)
+                prettyResponse = prettifier.prettify()
+                if prettyResponse != '':
+                    self.outputWidget.set_text(self.outputWidget.get_text()[0] + prettyResponse + '\n')
 
 e = Event()
 q = Queue()
