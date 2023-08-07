@@ -59,8 +59,6 @@ def mainLoop(c):
         except urllib.error.HTTPError:
             c.connect()
             reconnected = True
-        except TimeoutExpired:
-            c.getExecResponse()
         except Exception as e:
             print(str(e))
             sys.exit(1)
