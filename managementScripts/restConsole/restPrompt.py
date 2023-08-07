@@ -51,11 +51,6 @@ class restPrompt(urwid.WidgetWrap):
             except Exception as e:
                 sys.stderr.write(str(e)+"\n")
                 sys.exit(str(e))
-            # if response == '':
-            #     if not self.queue.empty():
-            #         with self.lock:
-            #             command = self.queue.get()
-            #         self.console.exec(command)
             if response != '':
                 prettifier = xmlPrettifier(response)
                 prettyResponse = prettifier.prettify()
