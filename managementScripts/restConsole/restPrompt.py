@@ -38,7 +38,8 @@ class restPrompt(urwid.WidgetWrap):
 
         self.console.connect()
     def getOutput(self,delay,event):
-        startTime = time.perf_counter_ns()
+        startTime   = time.perf_counter_ns()
+        autoRequest = False
         while True:
             if event.is_set(): break
             response = ''
@@ -48,7 +49,8 @@ class restPrompt(urwid.WidgetWrap):
                     sys.stderr.write("Getting response\n")
                     response = self.console.getExecResponse()
                     sys.stderr.write(response)
-                    startTime = time.perf_counter_ns() 
+                    autoRequest = True
+                    startTime = time.perf_counter_ns()
                 except urllib.error.HTTPError as e:
                     sys.stderr.write(str(e)+"\n")
                     console.connect()
@@ -73,6 +75,10 @@ class restPrompt(urwid.WidgetWrap):
                 prettyResponse = prettifier.prettify()
                 if prettyResponse != '':
                     self.outputWidget.set_text(self.outputWidget.get_text()[0] + prettyResponse + '\n')
+            if autoRequest:
+                autoRequest = False
+            else:
+                time.sleep(0.001)
 
 e = Event()
 q = Queue()
