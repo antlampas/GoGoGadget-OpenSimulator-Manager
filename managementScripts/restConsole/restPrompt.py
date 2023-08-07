@@ -45,6 +45,7 @@ class restPrompt(urwid.WidgetWrap):
             if (endTime - startTime) >= delay*pow(10,9):
                 try:
                     response = self.console.getExecResponse() #something happens here...
+                    sys.stderr(response)
                     startTime = time.perf_counter_ns() 
                 except urllib.error.HTTPError as e:
                     self.outputWidget.set_text(str(e))
