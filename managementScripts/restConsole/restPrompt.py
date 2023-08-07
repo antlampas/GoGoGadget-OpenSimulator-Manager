@@ -75,8 +75,7 @@ try:
     else:
         sys.exit("Wrong number of arguments")
 except Exception as e:
-    print(str(e))
-    sys.exit(1)
+    sys.exit(str(e))
 
 outputThread = Thread(target=tui.getOutput,args=(1,e,q,l))
 
