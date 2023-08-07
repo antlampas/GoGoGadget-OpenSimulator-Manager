@@ -27,7 +27,7 @@ class inputText(urwid.Edit):
         super(inputText, self).keypress(size, key)
 
 class restPrompt(urwid.WidgetWrap):
-    def __init__(self,delay,queue,lock,user="",password="",url="http://127.0.0.1",port=11000):
+    def __init__(self,delay,event,queue,lock,user="",password="",url="http://127.0.0.1",port=11000):
         self.lock         = lock
         self.queue        = queue
         self.console      = restConsole(user,password,url,port)
@@ -37,46 +37,39 @@ class restPrompt(urwid.WidgetWrap):
         self._w           = urwid.Frame(body=urwid.Filler(self.outputWidget),footer=self.inputWidget,focus_part='footer')
 
         self.console.connect()
-    def getOutput(self,delay,event):
-        startTime   = time.perf_counter_ns()
-        autoRequest = False
+    def getOutput(self,delay):
         while True:
-            if event.is_set():
+            if self.event.is_set():
                 break
             response = ''
-            endTime  = time.perf_counter_ns()
-            if (endTime - startTime) >= delay*pow(10,9):
-                try:
-                    response = self.console.getExecResponse()
-                    autoRequest = True
-                    startTime = time.perf_counter_ns()
-                except urllib.error.HTTPError as e:
-                    sys.stderr.write(str(e)+"\n")
-                    console.connect()
-                except Exception as e:
-                    sys.stderr.write(str(e)+"\n")
-                    sys.exit(str(e))
-            if response == '':
-                if not self.queue.empty():
-                    with self.lock:
-                        command = self.queue.get()
-                    self.console.exec(command)
-            else:
+            try:
+                response = self.console.getExecResponse()
+                startTime = time.perf_counter_ns()
+            except urllib.error.HTTPError as e:
+                sys.stderr.write(str(e)+"\n")
+                console.connect()
+            except Exception as e:
+                sys.stderr.write(str(e)+"\n")
+                sys.exit(str(e))
+            # if response == '':
+            #     if not self.queue.empty():
+            #         with self.lock:
+            #             command = self.queue.get()
+            #         self.console.exec(command)
+            if response != '':
                 prettifier = xmlPrettifier(response)
                 prettyResponse = prettifier.prettify()
                 if prettyResponse != '':
                     self.outputWidget.set_text(self.outputWidget.get_text()[0] + prettyResponse + '\n')
-            if autoRequest:
-                autoRequest = False
-            else:
-                time.sleep(0.001)
-    def sendInput(self,delay,event):
-        if event.is_set():
+            time.sleep(delay)
+    def sendInput(self,delay):
+        if self.event.is_set():
             break
-        if not self.queue.empty():
+        while not self.queue.empty():
             with self.lock:
-                command = self.queue.get()
+                command = queue.get()
             self.console.exec(command)
+        time.sleep(delay)
 
 
 ########################### REST prompt main process ###########################
@@ -96,8 +89,8 @@ try:
 except Exception as e:
     sys.exit(str(e))
 
-outputThread = Thread(target=tui.getOutput,args=(0.5,e),daemon=True)
-
+outputThread = Thread(target=tui.getOutput,args=(0.001,e),daemon=True)
+inputThread  Thread(target=tui.sendInput,args=(0.001,e),daemon=True)
 outputThread.start()
 
 eventLoop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
