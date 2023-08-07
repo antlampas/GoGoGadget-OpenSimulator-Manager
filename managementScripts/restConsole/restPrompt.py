@@ -41,7 +41,8 @@ class restPrompt(urwid.WidgetWrap):
         startTime   = time.perf_counter_ns()
         autoRequest = False
         while True:
-            if event.is_set(): break
+            if event.is_set():
+                break
             response = ''
             endTime  = time.perf_counter_ns()
             if (endTime - startTime) >= delay*pow(10,9):
@@ -69,6 +70,13 @@ class restPrompt(urwid.WidgetWrap):
                 autoRequest = False
             else:
                 time.sleep(0.001)
+    def sendInput(self,delay,event):
+        if event.is_set():
+            break
+        if not self.queue.empty():
+            with self.lock:
+                command = self.queue.get()
+            self.console.exec(command)
 
 
 ########################### REST prompt main process ###########################
