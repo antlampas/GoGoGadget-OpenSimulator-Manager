@@ -1,89 +1,88 @@
-#Author: antlampas
-#Date: 2023-01-04
-#This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
-
-"""REST Prompt
-
-A command-line interactive prompt for the OpenSimulator REST Console
-"""
-
-#TODO: review the design to "decouple" the prompt from the output
-
 import sys
-import curses
-import urllib.request
-import urllib.parse
+import asyncio
+import re
+import urwid
 
-from threading     import Event
+from threading import Thread,Event,Lock
+from queue     import Queue
 
 from restConsole   import restConsole
 from xmlPrettifier import xmlPrettifier
 
-exit = Event()
+class inputText(urwid.Edit):
+    def __init__(self,queue,lock):
+        super().__init__('Prompt: ')
+        self.queue   = queue
+        self.lock    = lock
+    def keypress(self,size,key):
+        if key == 'esc':
+            raise urwid.ExitMainLoop()
+        elif key == 'enter':
+            if not self.queue.full():
+                with self.lock:
+                    self.queue.put(self.get_edit_text())
+            self.set_edit_text('')
+        super(inputText, self).keypress(size, key)
 
-def sleep(timeSpan):
-    """Sleep
+class restPrompt(urwid.WidgetWrap):
+    def __init__(self,delay,queue,lock,url="http://127.0.0.1/",port=11000,user="",password=""):
+        self.console      = restConsole(user,password,url,port)
+        self.alphanum     = re.compile('[a-zA-Z0-9]+')
+        self.inputWidget  = inputText(queue,lock)
+        self.outputWidget = urwid.Text('')
+        self._w           = urwid.Frame(body=urwid.Filler(self.outputWidget),footer=self.inputWidget,focus_part='footer')
+        
+        self.console.connect()
+    def getOutput(self,event,queue,lock,delay):
+        startTime = time.perf_counter_ns()
+        while True:
+            if event.is_set(): break
+            response = ''
+            endTime  = time.perf_counter_ns()
+            if (endTime - startTime) >= pow(delay,10,9):
+                try:
+                    response = self.console.getExecResponse()
+                except urllib.error.HTTPError:
+                    console.connect()
+                except TimeoutExpired:
+                    console.getExecResponse()
+                except Exception as e:
+                    print(str(e))
+                    sys.exit(1)
+            if response == '':
+                if not queue.empty():
+                    with lock:
+                        command = queue.get()
+                        self.console.exec(command)
+                    time.sleep(1)
+                    response = self.console.getExecResponse()
+            if self.alphanum.match(response):
+                self.outputWidget.set_text(self.outputWidget.get_text()[0] + response + '\n')
+                self.inputWidget.command = ''
 
-    An utility function for multithreaded sleep
-    """
-    exit.wait(timeSpan)
-
-def mainLoop(c):
-    """Main Loop
-
-    This is the main loop waiting for user input and prints the REST Console output
-    """
-    reconnected = False
-    while True:
-        try:
-            if not reconnected:
-                command = input("Prompt: ")
-            else:
-                reconnected = False
-            if command == "disconnect":
-                c.__del__()
-                sleep(0.1)
-                break
-            elif command == "quit":
-                status = c.exec("quit")
-                c.__del__()
-                sleep(0.1)
-                break
-            else:
-                status = c.exec(command)
-                sleep(0.5)
-                response   = c.getExecResponse()
-                prettifier = xmlPrettifier(response)
-                value      = prettifier.prettify()
-                print(value,end='')
-                sleep(0.1)
-        except urllib.error.HTTPError:
-            c.connect()
-            reconnected = True
-        except TimeoutExpired:
-            c.getExecResponse()
-        except Exception as e:
-            print(str(e))
-            sys.exit(1)
-    print("Disconnecting...")
-
-############################## Initialization #################################
 try:
+    e = Event()
+    q = Queue()
+    l = Lock()
+    
     if   len(sys.argv) == 3:
-        console = restConsole(sys.argv[1],sys.argv[2])
+        tui = TUI(1,q,l,sys.argv[1],sys.argv[2])
     elif len(sys.argv) == 4:
-        console = restConsole(sys.argv[1],sys.argv[2],sys.argv[3])
+        tui = TUI(1,q,l,sys.argv[1],sys.argv[2],sys.argv[3])
     elif len(sys.argv) == 5:
-        console = restConsole(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
+        tui = TUI(1,q,l,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
     else:
         sys.exit("Wrong number of arguments")
 except Exception as e:
     print(str(e))
     sys.exit(1)
-############################ End Initialization ###############################
 
-################################# Main Loop ###################################
-mainLoop(console)
-print("Quitting...")
-sys.exit(0)
-############################### End Main Loop #################################
+outputThread = Thread(target=tui.getOutput,args=(e,q,l))
+
+outputThread.start()
+
+eventLoop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
+mainLoop  = urwid.MainLoop(tui,event_loop=eventLoop).run()
+
+e.set()
+outputThread.join()
