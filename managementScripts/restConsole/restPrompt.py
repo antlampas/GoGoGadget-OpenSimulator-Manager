@@ -63,13 +63,14 @@ class restPrompt(urwid.WidgetWrap):
                     self.outputWidget.set_text(self.outputWidget.get_text()[0] + prettyResponse + '\n')
             time.sleep(delay)
     def sendInput(self,delay):
-        if self.event.is_set():
-            break
-        while not self.queue.empty():
-            with self.lock:
-                command = queue.get()
-            self.console.exec(command)
-        time.sleep(delay)
+        while True:
+            if self.event.is_set():
+                break
+            while not self.queue.empty():
+                with self.lock:
+                    command = queue.get()
+                self.console.exec(command)
+            time.sleep(delay)
 
 
 ########################### REST prompt main process ###########################
