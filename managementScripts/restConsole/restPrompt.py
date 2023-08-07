@@ -99,4 +99,5 @@ print("Waiting for all threads shutdown...")
 outputThread.join()
 inputThread.join()
 print("All threads terminated")
+print("Bye...")
 ######################### REST prompt main process end #########################
