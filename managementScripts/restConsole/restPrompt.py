@@ -53,7 +53,7 @@ class restPrompt(urwid.WidgetWrap):
                     self.outputWidget.set_text(str(e))
                     console.connect()
                 except TimeoutExpired as e:
-                     sys.stderr(str(e))
+                    sys.stderr(str(e))
                     self.outputWidget.set_text(str(e))
                     console.getExecResponse()
                 except Exception as e:
@@ -86,7 +86,7 @@ try:
 except Exception as e:
     sys.exit(str(e))
 
-outputThread = Thread(target=tui.getOutput,args=(6,e))
+outputThread = Thread(target=tui.getOutput,args=(0.5,e))
 
 outputThread.start()
 
