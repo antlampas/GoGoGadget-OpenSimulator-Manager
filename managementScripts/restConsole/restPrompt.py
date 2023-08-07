@@ -44,21 +44,32 @@ class restPrompt(urwid.WidgetWrap):
             endTime  = time.perf_counter_ns()
             if (endTime - startTime) >= delay*pow(10,9):
                 try:
+                    self.outputWidget.set_text("retrieving respone")
+                    time.sleep(1)
                     response = self.console.getExecResponse()
-                except urllib.error.HTTPError:
+                    self.outputWidget.set_text("response retrieved")
+                    time.sleep(1)
+                    startTime = time.perf_counter_ns() 
+                except urllib.error.HTTPError as e:
+                    self.outputWidget.set_text(str(e))
                     console.connect()
-                except TimeoutExpired:
+                except TimeoutExpired as e:
+                    self.outputWidget.set_text(str(e))
                     console.getExecResponse()
                 except Exception as e:
                     sys.exit(str(e))
             if response == '':
+                self.outputWidget.set_text("response empty")
+                time.sleep(1)
                 if not self.queue.empty():
+                    self.outputWidget.set_text("queue not empty")
                     with self.lock:
                         command = self.queue.get()
                         self.console.exec(command)
                     time.sleep(1)
                     response = self.console.getExecResponse()
-            if response != '':
+            else:
+                self.outputWidget.set_text("writing response")
                 self.outputWidget.set_text(self.outputWidget.get_text()[0] + response + '\n')
                 self.inputWidget.command = ''
 
@@ -78,7 +89,7 @@ try:
 except Exception as e:
     sys.exit(str(e))
 
-outputThread = Thread(target=tui.getOutput,args=(1,e))
+outputThread = Thread(target=tui.getOutput,args=(6,e))
 
 outputThread.start()
 
