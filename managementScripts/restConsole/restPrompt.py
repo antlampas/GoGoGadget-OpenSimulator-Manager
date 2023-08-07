@@ -27,7 +27,8 @@ class inputText(urwid.Edit):
         super(inputText, self).keypress(size, key)
 
 class restPrompt(urwid.WidgetWrap):
-    def __init__(self,delay,event,queue,lock,user="",password="",url="http://127.0.0.1",port=11000):
+    def __init__(self,event,queue,lock,user="",password="",url="http://127.0.0.1",port=11000):
+        self.event        = event
         self.lock         = lock
         self.queue        = queue
         self.console      = restConsole(user,password,url,port)
@@ -44,7 +45,6 @@ class restPrompt(urwid.WidgetWrap):
             response = ''
             try:
                 response = self.console.getExecResponse()
-                startTime = time.perf_counter_ns()
             except urllib.error.HTTPError as e:
                 sys.stderr.write(str(e)+"\n")
                 console.connect()
@@ -80,24 +80,26 @@ l = Lock()
 
 try:
     if   len(sys.argv) == 3:
-        tui = restPrompt(1,q,l,sys.argv[1],sys.argv[2])
+        tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2])
     elif len(sys.argv) == 4:
-        tui = restPrompt(1,q,l,sys.argv[1],sys.argv[2],sys.argv[3])
+        tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2],sys.argv[3])
     elif len(sys.argv) == 5:
-        tui = restPrompt(1,q,l,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
+        tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
     else:
         sys.exit("Wrong number of arguments")
 except Exception as e:
     sys.exit(str(e))
 
 outputThread = Thread(target=tui.getOutput,args=(0.001,e),daemon=True)
-inputThread = Thread(target=tui.sendInput,args=(0.001,e),daemon=True)
+inputThread  = Thread(target=tui.sendInput,args=(0.001,e),daemon=True)
+
 outputThread.start()
+inputThread.start()
 
 eventLoop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
 mainLoop  = urwid.MainLoop(tui,event_loop=eventLoop).run()
 
 e.set()
 outputThread.join()
-
+inputThread.join()
 ######################### REST prompt main process end #########################
