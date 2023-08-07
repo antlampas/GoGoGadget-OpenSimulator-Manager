@@ -94,6 +94,9 @@ eventLoop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
 mainLoop  = urwid.MainLoop(tui,event_loop=eventLoop).run()
 
 e.set()
+
+print("Waiting for all threads shutdown...")
 outputThread.join()
 inputThread.join()
+print("All threads terminated")
 ######################### REST prompt main process end #########################
