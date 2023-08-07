@@ -32,7 +32,6 @@ class restPrompt(urwid.WidgetWrap):
         self.lock         = lock
         self.queue        = queue
         self.console      = restConsole(user,password,url,port)
-        self.alphanum     = re.compile('[a-zA-Z0-9<>]+')
         self.inputWidget  = inputText(queue,lock)
         self.outputWidget = urwid.Text('')
         self._w           = urwid.Frame(body=urwid.Filler(self.outputWidget),footer=self.inputWidget,focus_part='footer')
