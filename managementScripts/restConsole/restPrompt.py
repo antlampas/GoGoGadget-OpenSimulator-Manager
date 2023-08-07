@@ -60,7 +60,7 @@ class restPrompt(urwid.WidgetWrap):
                     with self.lock:
                         command = self.queue.get()
                     self.console.exec(command)
-            if response != '':
+            else:
                 prettifier = xmlPrettifier(response)
                 prettyResponse = prettifier.prettify()
                 if prettyResponse != '':
