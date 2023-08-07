@@ -34,7 +34,7 @@ class restPrompt(urwid.WidgetWrap):
         self.console      = restConsole(user,password,url,port)
         self.inputWidget  = inputText(queue,lock)
         self.outputWidget = urwid.Text('')
-        self._w           = urwid.Frame(body=urwid.Filler(self.outputWidget),footer=self.inputWidget,focus_part='footer')
+        self._w           = urwid.Frame(body=urwid.ListBox([self.outputWidget]),footer=self.inputWidget,focus_part='footer')
 
         self.console.connect()
     def getOutput(self,delay):
