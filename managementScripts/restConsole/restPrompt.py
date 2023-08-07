@@ -1,6 +1,7 @@
 import sys
 import asyncio
 import re
+import time
 import urwid
 
 from threading import Thread,Event,Lock
@@ -33,7 +34,7 @@ class restPrompt(urwid.WidgetWrap):
         self._w           = urwid.Frame(body=urwid.Filler(self.outputWidget),footer=self.inputWidget,focus_part='footer')
         
         self.console.connect()
-    def getOutput(self,event,queue,lock,delay):
+    def getOutput(self,delay,event,queue,lock):
         startTime = time.perf_counter_ns()
         while True:
             if event.is_set(): break
@@ -77,7 +78,7 @@ except Exception as e:
     print(str(e))
     sys.exit(1)
 
-outputThread = Thread(target=tui.getOutput,args=(e,q,l))
+outputThread = Thread(target=tui.getOutput,args=(1,e,q,l))
 
 outputThread.start()
 
