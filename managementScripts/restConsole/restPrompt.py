@@ -68,7 +68,7 @@ class restPrompt(urwid.WidgetWrap):
                 break
             while not self.queue.empty():
                 with self.lock:
-                    command = queue.get()
+                    command = self.queue.get()
                 self.console.exec(command)
             time.sleep(delay)
 
