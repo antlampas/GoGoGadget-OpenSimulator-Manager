@@ -66,11 +66,11 @@ try:
     l = Lock()
     
     if   len(sys.argv) == 3:
-        tui = TUI(1,q,l,sys.argv[1],sys.argv[2])
+        tui = restPrompt(1,q,l,sys.argv[1],sys.argv[2])
     elif len(sys.argv) == 4:
-        tui = TUI(1,q,l,sys.argv[1],sys.argv[2],sys.argv[3])
+        tui = restPrompt(1,q,l,sys.argv[1],sys.argv[2],sys.argv[3])
     elif len(sys.argv) == 5:
-        tui = TUI(1,q,l,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
+        tui = restPrompt(1,q,l,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
     else:
         sys.exit("Wrong number of arguments")
 except Exception as e:
