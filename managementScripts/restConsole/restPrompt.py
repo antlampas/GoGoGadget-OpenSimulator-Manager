@@ -27,6 +27,8 @@ class inputText(urwid.Edit):
 
 class restPrompt(urwid.WidgetWrap):
     def __init__(self,delay,queue,lock,user="",password="",url="http://127.0.0.1",port=11000):
+        self.lock         = lock
+        self.queue        = queue
         self.console      = restConsole(user,password,url,port)
         self.alphanum     = re.compile('[a-zA-Z0-9]+')
         self.inputWidget  = inputText(queue,lock)
@@ -34,7 +36,7 @@ class restPrompt(urwid.WidgetWrap):
         self._w           = urwid.Frame(body=urwid.Filler(self.outputWidget),footer=self.inputWidget,focus_part='footer')
         
         self.console.connect()
-    def getOutput(self,delay,event,queue,lock):
+    def getOutput(self,delay,event):
         startTime = time.perf_counter_ns()
         while True:
             if event.is_set(): break
@@ -52,8 +54,8 @@ class restPrompt(urwid.WidgetWrap):
                     sys.exit(1)
             if response == '':
                 if not queue.empty():
-                    with lock:
-                        command = queue.get()
+                    with self.lock:
+                        command = self.queue.get()
                         self.console.exec(command)
                     time.sleep(1)
                     response = self.console.getExecResponse()
@@ -77,7 +79,7 @@ try:
 except Exception as e:
     sys.exit(str(e))
 
-outputThread = Thread(target=tui.getOutput,args=(1,e,q,l))
+outputThread = Thread(target=tui.getOutput,args=(1,e))
 
 outputThread.start()
 
