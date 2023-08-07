@@ -46,9 +46,7 @@ class restPrompt(urwid.WidgetWrap):
             endTime  = time.perf_counter_ns()
             if (endTime - startTime) >= delay*pow(10,9):
                 try:
-                    sys.stderr.write("Getting response\n")
                     response = self.console.getExecResponse()
-                    sys.stderr.write(response)
                     autoRequest = True
                     startTime = time.perf_counter_ns()
                 except urllib.error.HTTPError as e:
@@ -58,19 +56,13 @@ class restPrompt(urwid.WidgetWrap):
                     sys.stderr.write(str(e)+"\n")
                     sys.exit(str(e))
             if response == '':
-                sys.stderr.write("Empty response\n")
                 if not self.queue.empty():
-                    sys.stderr.write("Receiving command\n")
                     with self.lock:
                         command = self.queue.get()
-                    sys.stderr.write("Executing command\n")
                     self.console.exec(command)
-                    time.sleep(0.6)
-                    sys.stderr.write("Command executed. Retreiving response\n")
+                    time.sleep(0.5)
                     response = self.console.getExecResponse()
-                    sys.stderr.write("Response:\n" + response)
             if response != '':
-                sys.stderr.write("Writing response onscreen\n")
                 prettifier = xmlPrettifier(response)
                 prettyResponse = prettifier.prettify()
                 if prettyResponse != '':
@@ -80,6 +72,8 @@ class restPrompt(urwid.WidgetWrap):
             else:
                 time.sleep(0.001)
 
+
+########################### REST prompt main process ###########################
 e = Event()
 q = Queue()
 l = Lock()
@@ -96,7 +90,7 @@ try:
 except Exception as e:
     sys.exit(str(e))
 
-outputThread = Thread(target=tui.getOutput,args=(0.5,e))
+outputThread = Thread(target=tui.getOutput,args=(0.5,e),daemon=True)
 
 outputThread.start()
 
@@ -105,3 +99,5 @@ mainLoop  = urwid.MainLoop(tui,event_loop=eventLoop).run()
 
 e.set()
 outputThread.join()
+
+######################### REST prompt main process end #########################
