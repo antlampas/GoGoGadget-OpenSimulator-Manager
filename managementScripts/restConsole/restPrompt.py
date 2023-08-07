@@ -45,7 +45,7 @@ class restPrompt(urwid.WidgetWrap):
             endTime  = time.perf_counter_ns()
             if (endTime - startTime) >= delay*pow(10,9):
                 try:
-                    sys.stderr.write("get response\n")
+                    sys.stderr.write("Getting response\n")
                     response = self.console.getExecResponse()
                     sys.stderr.write(response)
                     startTime = time.perf_counter_ns() 
@@ -64,10 +64,10 @@ class restPrompt(urwid.WidgetWrap):
                     sys.stderr.write("Executing command\n")
                     self.console.exec(command)
                     time.sleep(0.6)
-                    sys.stderr.write("Command executed. Retreiving response"
+                    sys.stderr.write("Command executed. Retreiving response\n")
                     response = self.console.getExecResponse()
-            if response != ''
-                sys.stderr.write("Writing response onscreen")
+            if response != '':
+                sys.stderr.write("Writing response onscreen\n")
                 self.outputWidget.set_text(self.outputWidget.get_text()[0] + response + '\n')
                 self.inputWidget.command = ''
 
