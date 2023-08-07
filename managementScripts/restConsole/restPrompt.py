@@ -50,8 +50,7 @@ class restPrompt(urwid.WidgetWrap):
                 except TimeoutExpired:
                     console.getExecResponse()
                 except Exception as e:
-                    print(str(e))
-                    sys.exit(1)
+                    sys.exit(str(e))
             if response == '':
                 if not self.queue.empty():
                     with self.lock:
