@@ -5,8 +5,7 @@ import time
 import urllib
 import urwid
 
-from threading import Thread,Event
-from multiprocessing import Process,Lock
+from threading import Thread,Event,Lock
 from queue     import Queue
 
 from restConsole   import restConsole
@@ -40,8 +39,8 @@ class restPrompt(urwid.WidgetWrap):
         self.console.connect()
     def getOutput(self,delay):
         while True:
-            # if self.event.is_set():
-            #     break
+            if self.event.is_set():
+                break
             response = ''
             try:
                 response = self.console.getExecResponse()
@@ -59,14 +58,13 @@ class restPrompt(urwid.WidgetWrap):
             time.sleep(delay)
     def sendInput(self,delay):
         while True:
-            # if self.event.is_set():
-            #     break
+            if self.event.is_set():
+                break
             while not self.queue.empty():
                 with self.lock:
                     command = self.queue.get()
                 self.console.exec(command)
             time.sleep(delay)
-
 
 ########################### REST prompt main process ###########################
 e = Event()
@@ -85,11 +83,8 @@ try:
 except Exception as e:
     sys.exit(str(e))
 
-# outputThread = Thread(target=tui.getOutput,args=(0.001,))
-# inputThread  = Thread(target=tui.sendInput,args=(0.001,))
-
-outputThread = Process(target=tui.getOutput,args=(0.001,))
-inputThread  = Process(target=tui.sendInput,args=(0.001,))
+outputThread = Thread(target=tui.getOutput,args=(0.001,))
+inputThread  = Thread(target=tui.sendInput,args=(0.001,))
 
 outputThread.start()
 inputThread.start()
@@ -97,14 +92,11 @@ inputThread.start()
 eventLoop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
 mainLoop  = urwid.MainLoop(tui,event_loop=eventLoop).run()
 
-outputThread.terminate()
-inputThread.terminate()
-
-# e.set()
-# print("Waiting for all threads shutdown...")
-# outputThread.join()
-# inputThread.join()
-# print("All threads terminated")
+e.set()
+print("Waiting for all threads shutdown...")
+outputThread.join()
+inputThread.join()
+print("All threads terminated")
 
 print("Bye...")
 ######################### REST prompt main process end #########################
