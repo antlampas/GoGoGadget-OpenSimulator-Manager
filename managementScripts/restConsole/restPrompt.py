@@ -30,11 +30,11 @@ class restPrompt(urwid.WidgetWrap):
         self.lock         = lock
         self.queue        = queue
         self.console      = restConsole(user,password,url,port)
-        self.alphanum     = re.compile('[a-zA-Z0-9]+')
+        self.alphanum     = re.compile('[a-zA-Z0-9<>]+')
         self.inputWidget  = inputText(queue,lock)
         self.outputWidget = urwid.Text('')
         self._w           = urwid.Frame(body=urwid.Filler(self.outputWidget),footer=self.inputWidget,focus_part='footer')
-        
+
         self.console.connect()
     def getOutput(self,delay,event):
         startTime = time.perf_counter_ns()
@@ -42,7 +42,7 @@ class restPrompt(urwid.WidgetWrap):
             if event.is_set(): break
             response = ''
             endTime  = time.perf_counter_ns()
-            if (endTime - startTime) >= pow(delay,10,9):
+            if (endTime - startTime) >= pow(delay*10,9):
                 try:
                     response = self.console.getExecResponse()
                 except urllib.error.HTTPError:
@@ -53,13 +53,13 @@ class restPrompt(urwid.WidgetWrap):
                     print(str(e))
                     sys.exit(1)
             if response == '':
-                if not queue.empty():
+                if not self.queue.empty():
                     with self.lock:
                         command = self.queue.get()
                         self.console.exec(command)
                     time.sleep(1)
                     response = self.console.getExecResponse()
-            if self.alphanum.match(response):
+            if response != '':
                 self.outputWidget.set_text(self.outputWidget.get_text()[0] + response + '\n')
                 self.inputWidget.command = ''
 
