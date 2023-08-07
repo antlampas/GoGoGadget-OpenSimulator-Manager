@@ -45,25 +45,29 @@ class restPrompt(urwid.WidgetWrap):
             endTime  = time.perf_counter_ns()
             if (endTime - startTime) >= delay*pow(10,9):
                 try:
-                    sys.stderr.write("get response")
-                    response = self.console.getExecResponse() #something happens here...
+                    sys.stderr.write("get response\n")
+                    response = self.console.getExecResponse()
                     sys.stderr.write(response)
                     startTime = time.perf_counter_ns() 
                 except urllib.error.HTTPError as e:
-                    sys.stderr.write(str(e))
-                    self.outputWidget.set_text(str(e))
+                    sys.stderr.write(str(e)+"\n")
                     console.connect()
                 except Exception as e:
-                    sys.stderr.write(str(e))
+                    sys.stderr.write(str(e)+"\n")
                     sys.exit(str(e))
             if response == '':
+                sys.stderr.write("Empty response\n")
                 if not self.queue.empty():
+                    sys.stderr.write("Receiving command\n")
                     with self.lock:
                         command = self.queue.get()
-                        self.console.exec(command)
+                    sys.stderr.write("Executing command\n")
+                    self.console.exec(command)
+                    time.sleep(0.6)
+                    sys.stderr.write("Command executed. Retreiving response"
                     response = self.console.getExecResponse()
-            else:
-                self.outputWidget.set_text("writing response")
+            if response != ''
+                sys.stderr.write("Writing response onscreen")
                 self.outputWidget.set_text(self.outputWidget.get_text()[0] + response + '\n')
                 self.inputWidget.command = ''
 
