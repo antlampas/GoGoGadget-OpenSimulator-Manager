@@ -26,7 +26,7 @@ class inputText(urwid.Edit):
         super(inputText, self).keypress(size, key)
 
 class restPrompt(urwid.WidgetWrap):
-    def __init__(self,delay,queue,lock,user="",password="",url="http://127.0.0.1",port=11000):
+    def __init__(self,delay,user="",password="",url="http://127.0.0.1",port=11000):
         self.console      = restConsole(user,password,url,port)
         self.alphanum     = re.compile('[a-zA-Z0-9]+')
         self.inputWidget  = inputText(queue,lock)
@@ -67,11 +67,11 @@ try:
     l = Lock()
     
     if   len(sys.argv) == 3:
-        tui = restPrompt(1,q,l,sys.argv[1],sys.argv[2])
+        tui = restPrompt(1,sys.argv[1],sys.argv[2])
     elif len(sys.argv) == 4:
-        tui = restPrompt(1,q,l,sys.argv[1],sys.argv[2],sys.argv[3])
+        tui = restPrompt(1,sys.argv[1],sys.argv[2],sys.argv[3])
     elif len(sys.argv) == 5:
-        tui = restPrompt(1,q,l,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
+        tui = restPrompt(1,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
     else:
         sys.exit("Wrong number of arguments")
 except Exception as e:
