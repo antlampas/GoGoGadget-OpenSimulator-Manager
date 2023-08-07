@@ -19,7 +19,7 @@ class restConsole:
 
     REST Console Reference: http://opensimulator.org/wiki/RestConsole
     """
-    def __init__(self,user="",password="",url="http://127.0.0.1/",port="11000"):
+    def __init__(self,user="",password="",url="http://127.0.0.1",port="11000"):
         """Constructor
 
         user = is the REST Console username set in OpenSim.ini
