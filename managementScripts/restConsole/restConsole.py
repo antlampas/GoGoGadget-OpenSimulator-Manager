@@ -40,12 +40,12 @@ class restConsole:
 
         Starts the REST Console Session
         """
-        data = urllib.parse.urlencode({'USER': self.user,'PASS': self.password}).encode('ascii')
+        data    = urllib.parse.urlencode({'USER': self.user,'PASS': self.password}).encode('ascii')
         request = urllib.request.Request(f"{self.url}:{self.port}/StartSession/",data,method='POST')
         try:
             with urllib.request.urlopen(request) as response:
                 string = response.read()
-                doc = defusedxml.minidom.parseString(string)
+                doc    = defusedxml.minidom.parseString(string)
                 if len(doc.getElementsByTagName("SessionID")) > 0:
                     self.SessionID = doc.firstChild.firstChild.firstChild.nodeValue
                     self.getExecResponse()
@@ -58,13 +58,13 @@ class restConsole:
 
         Sends the required command to the started REST Console
         """
-        comm = {'ID':str(self.SessionID),'COMMAND':command}
+        comm        = {'ID':str(self.SessionID),'COMMAND':command}
         UserCommand = urllib.parse.urlencode(comm).encode('ascii')
-        request = urllib.request.Request(f"{self.url}:{self.port}/SessionCommand/",UserCommand,method='POST')
+        request     = urllib.request.Request(f"{self.url}:{self.port}/SessionCommand/",UserCommand,method='POST')
         try:
             with urllib.request.urlopen(request) as response:
                 string = response.read()
-                doc = defusedxml.minidom.parseString(string)
+                doc    = defusedxml.minidom.parseString(string)
                 return doc.toprettyxml(indent='    ')
         except:
             raise
@@ -77,7 +77,7 @@ class restConsole:
         try:
             with urllib.request.urlopen(request) as response:
                 string = response.read()
-                doc = defusedxml.minidom.parseString(string)
+                doc    = defusedxml.minidom.parseString(string)
                 return doc.toprettyxml('    ')
         except:
             raise
@@ -86,13 +86,13 @@ class restConsole:
 
         Quits the REST Console
         """
-        comm = {'ID':str(self.SessionID)}
-        data = urllib.parse.urlencode(comm).encode('ascii')
+        comm    = {'ID':str(self.SessionID)}
+        data    = urllib.parse.urlencode(comm).encode('ascii')
         request = urllib.request.Request(f"{self.url}:{self.port}/CloseSession/",data,method='POST')
         try:
             with urllib.request.urlopen(request) as response:
                 string = response.read()
-                doc = defusedxml.minidom.parseString(string)
+                doc    = defusedxml.minidom.parseString(string)
                 return doc.toprettyxml('    ')
         except:
             raise
