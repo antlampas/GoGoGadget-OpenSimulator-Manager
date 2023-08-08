@@ -1,3 +1,7 @@
+#Author: antlampas
+#Date: 2023-08-07
+#This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+
 import sys
 import asyncio
 import re
@@ -33,9 +37,9 @@ class restPrompt(urwid.WidgetWrap):
         self.queue        = queue
         self.console      = restConsole(user,password,url,port)
         self.inputWidget  = inputText(queue,lock)
-        self.outputWidget = urwid.Text('')
-        self._w           = urwid.Frame(body=urwid.ListBox([self.outputWidget]),footer=self.inputWidget,focus_part='footer')
-
+        self.outputWalker = urwid.SimpleListWalker([])
+        self.outputWidget = urwid.ListBox(self.outputWalker)
+        self._w           = urwid.Frame(body=self.outputWidget,footer=self.inputWidget,focus_part='footer')
         self.console.connect()
     def getOutput(self,delay):
         while True:
@@ -52,9 +56,14 @@ class restPrompt(urwid.WidgetWrap):
                 sys.exit(str(e))
             if response != '':
                 prettifier = xmlPrettifier(response)
-                prettyResponse = prettifier.prettify()
-                if prettyResponse != '':
-                    self.outputWidget.set_text(self.outputWidget.get_text()[0] + prettyResponse + '\n')
+                responseList = prettifier.prettify()
+                if responseList != '':
+                    printList = []
+                    for line in responseList:
+                        printList.append(urwid.Text(line))
+                    for line in printList:
+                        self.outputWalker.append(line)
+                        self.outputWidget.set_focus(len(self.outputWidget.body)-1)
             time.sleep(delay)
     def sendInput(self,delay):
         while True:

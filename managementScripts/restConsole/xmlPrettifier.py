@@ -43,7 +43,7 @@ class xmlPrettifier:
         clears all the tags. The output format is the content of each note, one
         content per line
         """
-        response = ""
+        response = []
         if self.currentNode is not None:
             if self.currentNode.hasChildNodes():
                 for node in self.currentNode.childNodes:
@@ -52,5 +52,5 @@ class xmlPrettifier:
                         nodeContent = self.getNodeContent()
                         if nodeContent is not None:
                             if self.currentNode.getAttribute("Prompt") == "false" and self.currentNode.getAttribute("Input") == "false":
-                                response += nodeContent + "\n"
+                                response.append(nodeContent)
         return response
