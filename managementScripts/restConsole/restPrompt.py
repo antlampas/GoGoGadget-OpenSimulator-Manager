@@ -30,6 +30,10 @@ class inputText(urwid.Edit):
             self.set_edit_text('')
         super(inputText, self).keypress(size, key)
 
+class outputText(urwid.ListBox):
+    def __init__(self):
+        super(outputText,self).__init__(urwid.SimpleListWalker([]))
+
 class restPrompt(urwid.WidgetWrap):
     def __init__(self,event,queue,lock,user="",password="",url="http://127.0.0.1",port=11000):
         self.event        = event
@@ -37,8 +41,7 @@ class restPrompt(urwid.WidgetWrap):
         self.queue        = queue
         self.console      = restConsole(user,password,url,port)
         self.inputWidget  = inputText(queue,lock)
-        self.outputWalker = urwid.SimpleListWalker([])
-        self.outputWidget = urwid.ListBox(self.outputWalker)
+        self.outputWidget = outputText()
         self._w           = urwid.Frame(body=self.outputWidget,footer=self.inputWidget,focus_part='footer')
         self.console.connect()
     def getOutput(self,delay):
@@ -62,7 +65,7 @@ class restPrompt(urwid.WidgetWrap):
                     for line in responseList:
                         printList.append(urwid.Text(line))
                     for line in printList:
-                        self.outputWalker.append(line)
+                        self.outputWidget.body.append(line)
                         self.outputWidget.set_focus(len(self.outputWidget.body)-1)
             time.sleep(delay)
     def sendInput(self,delay):
