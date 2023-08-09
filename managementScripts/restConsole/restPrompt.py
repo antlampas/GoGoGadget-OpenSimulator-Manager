@@ -79,14 +79,13 @@ class mainApp(object):
     def __init__(self):
         self.e = Event()
         self.q = Queue()
-        self.l = Lock()
         try:
             if   len(sys.argv) == 3:
-                self.tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2])
+                self.tui = restPrompt(e,q,sys.argv[1],sys.argv[2])
             elif len(sys.argv) == 4:
-                self.tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2],sys.argv[3])
+                self.tui = restPrompt(e,q,sys.argv[1],sys.argv[2],sys.argv[3])
             elif len(sys.argv) == 5:
-                self.tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
+                self.tui = restPrompt(e,q,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
             else:
                 sys.exit("Wrong number of arguments")
         except:
