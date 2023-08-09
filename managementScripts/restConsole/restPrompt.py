@@ -77,15 +77,15 @@ class restPrompt(urwid.WidgetWrap):
 ########################### REST prompt main process ###########################
 class mainApp(object):
     def __init__(self):
-        self.e = Event()
-        self.q = Queue()
+        self.event = Event()
+        self.queue = Queue()
         try:
             if   len(sys.argv) == 3:
-                self.tui = restPrompt(self.e,self.q,sys.argv[1],sys.argv[2])
+                self.tui = restPrompt(self.event,self.queue,sys.argv[1],sys.argv[2])
             elif len(sys.argv) == 4:
-                self.tui = restPrompt(self.e,self.q,sys.argv[1],sys.argv[2],sys.argv[3])
+                self.tui = restPrompt(self.event,self.queue,sys.argv[1],sys.argv[2],sys.argv[3])
             elif len(sys.argv) == 5:
-                self.tui = restPrompt(self.e,self.q,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
+                self.tui = restPrompt(self.event,self.queue,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
             else:
                 sys.exit("Wrong number of arguments")
         except:
@@ -101,7 +101,7 @@ class mainApp(object):
             eventLoop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
             mainLoop  = urwid.MainLoop(self.tui,event_loop=eventLoop).run()
 
-            self.e.set()
+            self.event.set()
             print("Waiting for all threads shutdown...")
             outputThread.join()
             inputThread.join()
