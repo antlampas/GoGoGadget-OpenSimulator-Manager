@@ -76,7 +76,7 @@ class restPrompt(urwid.WidgetWrap):
 
 ########################### REST prompt main process ###########################
 class mainApp(object):
-    def __init__(self)
+    def __init__(self):
         self.e = Event()
         self.q = Queue()
         self.l = Lock()
