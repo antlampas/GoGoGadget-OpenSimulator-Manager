@@ -18,7 +18,7 @@ from xmlPrettifier import xmlPrettifier
 class inputText(urwid.Edit):
     def __init__(self,queue):
         super().__init__('Prompt: ')
-        self.queue   = queue
+        self.queue = queue
     def keypress(self,size,key):
         if key == 'esc':
             raise urwid.ExitMainLoop()
@@ -37,7 +37,7 @@ class restPrompt(urwid.WidgetWrap):
         self.event        = event
         self.queue        = queue
         self.console      = restConsole(user,password,url,port)
-        self.inputWidget  = inputText(queue)
+        self.inputWidget  = inputText(self.queue)
         self.outputWidget = outputText()
         self._w           = urwid.Frame(body=self.outputWidget,footer=self.inputWidget,focus_part='footer')
         self.console.connect()
