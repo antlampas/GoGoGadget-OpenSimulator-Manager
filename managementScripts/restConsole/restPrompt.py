@@ -89,7 +89,7 @@ class mainApp(object):
             else:
                 sys.exit("Wrong number of arguments")
         except:
-            sys.exit(sys.exc_info()[2])
+            sys.exit(sys.exc_info()[1])
     def main(self):
         try:
             outputThread = Thread(target=self.tui.getOutput,args=(0.001,))
@@ -109,7 +109,7 @@ class mainApp(object):
 
             print("Bye...")
         except:
-            sys.exit(sys.exc_info()[2])
+            sys.exit(sys.exc_info()[1])
 ######################### REST prompt main process end #########################
 main = mainApp()
 
