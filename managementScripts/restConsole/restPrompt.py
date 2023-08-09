@@ -112,3 +112,4 @@ class mainApp(object):
         except:
             sys.exit(sys.exc_info()[2])
 ######################### REST prompt main process end #########################
+main()
