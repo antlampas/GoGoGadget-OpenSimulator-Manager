@@ -74,8 +74,7 @@ class restPrompt(urwid.WidgetWrap):
                 self.console.exec(command)
             time.sleep(delay)
 
-########################### REST prompt main process ###########################
-class mainApp(object):
+class mainWindow(object):
     def __init__(self):
         self.event = Event()
         self.queue = Queue()
@@ -113,7 +112,8 @@ class mainApp(object):
         except:
             sys.stderr.write(sys.exc_info()[1])
             sys.exit(sys.exc_info()[1])
-######################### REST prompt main process end #########################
-main = mainApp()
 
-main.main()
+########################### REST prompt main process ###########################
+promptApp = mainWindow()
+promptApp.main()
+######################### REST prompt main process end #########################
