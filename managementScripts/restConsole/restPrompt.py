@@ -101,7 +101,7 @@ class mainApp(object):
             eventLoop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
             mainLoop  = urwid.MainLoop(self.tui,event_loop=eventLoop).run()
 
-            e.set()
+            self.e.set()
             print("Waiting for all threads shutdown...")
             outputThread.join()
             inputThread.join()
