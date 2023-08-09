@@ -92,14 +92,14 @@ class mainApp(object):
             sys.exit(sys.exc_info()[2])
     def main(self):
         try:
-            outputThread = Thread(target=tui.getOutput,args=(0.001,))
-            inputThread  = Thread(target=tui.sendInput,args=(0.001,))
+            outputThread = Thread(target=self.tui.getOutput,args=(0.001,))
+            inputThread  = Thread(target=self.tui.sendInput,args=(0.001,))
 
             outputThread.start()
             inputThread.start()
 
             eventLoop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
-            mainLoop  = urwid.MainLoop(tui,event_loop=eventLoop).run()
+            mainLoop  = urwid.MainLoop(self.tui,event_loop=eventLoop).run()
 
             e.set()
             print("Waiting for all threads shutdown...")
