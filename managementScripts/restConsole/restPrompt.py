@@ -9,24 +9,22 @@ import time
 import urllib
 import urwid
 
-from threading import Thread,Event,Lock
+from threading import Thread,Event
 from queue     import Queue
 
 from restConsole   import restConsole
 from xmlPrettifier import xmlPrettifier
 
 class inputText(urwid.Edit):
-    def __init__(self,queue,lock):
+    def __init__(self,queue):
         super().__init__('Prompt: ')
         self.queue   = queue
-        self.lock    = lock
     def keypress(self,size,key):
         if key == 'esc':
             raise urwid.ExitMainLoop()
         elif key == 'enter':
             if not self.queue.full():
-                with self.lock:
-                    self.queue.put(self.get_edit_text())
+                self.queue.put(self.get_edit_text())
             self.set_edit_text('')
         super(inputText, self).keypress(size, key)
 
@@ -35,12 +33,11 @@ class outputText(urwid.ListBox):
         super(outputText,self).__init__(urwid.SimpleListWalker([]))
 
 class restPrompt(urwid.WidgetWrap):
-    def __init__(self,event,queue,lock,user="",password="",url="http://127.0.0.1",port=11000):
+    def __init__(self,event,queue,user="",password="",url="http://127.0.0.1",port=11000):
         self.event        = event
-        self.lock         = lock
         self.queue        = queue
         self.console      = restConsole(user,password,url,port)
-        self.inputWidget  = inputText(queue,lock)
+        self.inputWidget  = inputText(queue)
         self.outputWidget = outputText()
         self._w           = urwid.Frame(body=self.outputWidget,footer=self.inputWidget,focus_part='footer')
         self.console.connect()
@@ -73,8 +70,7 @@ class restPrompt(urwid.WidgetWrap):
             if self.event.is_set():
                 break
             while not self.queue.empty():
-                with self.lock:
-                    command = self.queue.get()
+                command = self.queue.get()
                 self.console.exec(command)
             time.sleep(delay)
 
