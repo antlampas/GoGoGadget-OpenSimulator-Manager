@@ -49,11 +49,11 @@ class restPrompt(urwid.WidgetWrap):
             try:
                 response = self.console.getExecResponse()
             except urllib.error.HTTPError as e:
-                sys.stderr.write(str(e)+"\n")
+                sys.stderr.write(sys.exc_info()[1])
                 console.connect()
-            except Exception as e:
-                sys.stderr.write(str(e)+"\n")
-                sys.exit(str(e))
+            except:
+                sys.stderr.write(sys.exc_info()[1])
+                sys.exit(sys.exc_info()[1])
             if response != '':
                 prettifier = xmlPrettifier(response)
                 responseList = prettifier.prettify()
@@ -87,8 +87,10 @@ class mainApp(object):
             elif len(sys.argv) == 5:
                 self.tui = restPrompt(self.event,self.queue,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
             else:
+                sys.stderr.write("Wrong number of arguments")
                 sys.exit("Wrong number of arguments")
         except:
+            sys.stderr.write(sys.exc_info()[1])
             sys.exit(sys.exc_info()[1])
     def main(self):
         try:
@@ -109,6 +111,7 @@ class mainApp(object):
 
             print("Bye...")
         except:
+            sys.stderr.write(sys.exc_info()[1])
             sys.exit(sys.exc_info()[1])
 ######################### REST prompt main process end #########################
 main = mainApp()
