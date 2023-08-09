@@ -79,36 +79,40 @@ class restPrompt(urwid.WidgetWrap):
             time.sleep(delay)
 
 ########################### REST prompt main process ###########################
-e = Event()
-q = Queue()
-l = Lock()
+class mainApp(object):
+    def __init__(self)
+        self.e = Event()
+        self.q = Queue()
+        self.l = Lock()
+        try:
+            if   len(sys.argv) == 3:
+                self.tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2])
+            elif len(sys.argv) == 4:
+                self.tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2],sys.argv[3])
+            elif len(sys.argv) == 5:
+                self.tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
+            else:
+                sys.exit("Wrong number of arguments")
+        except:
+            sys.exit(sys.exc_info()[2])
+    def main(self):
+        try:
+            outputThread = Thread(target=tui.getOutput,args=(0.001,))
+            inputThread  = Thread(target=tui.sendInput,args=(0.001,))
 
-try:
-    if   len(sys.argv) == 3:
-        tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2])
-    elif len(sys.argv) == 4:
-        tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2],sys.argv[3])
-    elif len(sys.argv) == 5:
-        tui = restPrompt(e,q,l,sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
-    else:
-        sys.exit("Wrong number of arguments")
-except Exception as e:
-    sys.exit(str(e))
+            outputThread.start()
+            inputThread.start()
 
-outputThread = Thread(target=tui.getOutput,args=(0.001,))
-inputThread  = Thread(target=tui.sendInput,args=(0.001,))
+            eventLoop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
+            mainLoop  = urwid.MainLoop(tui,event_loop=eventLoop).run()
 
-outputThread.start()
-inputThread.start()
+            e.set()
+            print("Waiting for all threads shutdown...")
+            outputThread.join()
+            inputThread.join()
+            print("All threads terminated")
 
-eventLoop = urwid.AsyncioEventLoop(loop=asyncio.get_event_loop())
-mainLoop  = urwid.MainLoop(tui,event_loop=eventLoop).run()
-
-e.set()
-print("Waiting for all threads shutdown...")
-outputThread.join()
-inputThread.join()
-print("All threads terminated")
-
-print("Bye...")
+            print("Bye...")
+        except:
+            sys.exit(sys.exc_info()[2])
 ######################### REST prompt main process end #########################
