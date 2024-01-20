@@ -40,7 +40,7 @@ class createBaseDirecotryStructure:
         the base directory structure. If it's unable to, it will put all the
         errors in a errors list and it will raise it as exception.
         """
-        if basepath:
+        if basePath:
             self.bPath = Path(basePath)
         else:
             self.errors.append("No base path provided")
@@ -52,23 +52,24 @@ class createBaseDirecotryStructure:
             self.bcpath = Path(baseConfPath)
         else:
             self.errors.append("No base configuration path provided")
-        #Checks on paths
-        for path in [bPath,blPath,bcPath]:
-            if not path.exists():
-                self.errors.append(str(path) + " doesn't exist")
-                continue
-            if not path.is_absolute():
-                self.errors.append(path + " is not absolute")
-                continue
+        if not len(errors):
+            #Checks on paths
+            for path in [bPath,blPath,bcPath]:
+                if not path.exists():
+                    self.errors.append(str(path) + " doesn't exist")
+                    continue
+                if not path.is_absolute():
+                    self.errors.append(path + " is not absolute")
+                    continue
 
-            path.joinpath('opensimulator')
-            
-            if path.exists():
-                self.errors.append(str(path) + " already exists")
-            else:
-                try:
-                    path.mkdir(chmod=0o755):
-                except OSError as e:
-                    self.errors.append("Can't create " + path + " because " +str(e))
-        if len(errors):
+                path.joinpath('opensimulator')
+                
+                if path.exists():
+                    self.errors.append(str(path) + " already exists")
+                else:
+                    try:
+                        path.mkdir(chmod=0o755):
+                    except OSError as e:
+                        self.errors.append("Can't create " + path + " because " +str(e))
+        else:
             raise Exception(self.errors)

@@ -23,9 +23,11 @@ class inputText(urwid.Edit):
         if key == 'esc':
             raise urwid.ExitMainLoop()
         elif key == 'enter':
-            if not self.queue.full():
-                self.queue.put(self.get_edit_text())
-            self.set_edit_text('')
+            text = self.get_edit_text()
+            if text:
+                if not self.queue.full():
+                    self.queue.put(self.get_edit_text())
+                self.set_edit_text('')
         super(inputText, self).keypress(size, key)
 
 class outputText(urwid.ListBox):
