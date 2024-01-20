@@ -16,3 +16,5 @@ class createSimulator:
     """ 
     def __init__(self,gridName="",simulatorName="",basePath="",baseConfPath="",baseLogPath=""):
         pass
+    def __func__(self,basePath="",baseLogPath="",baseConfPath="",gridName="",services=[]):
+        pass

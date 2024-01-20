@@ -40,3 +40,4 @@ class createBaseGridDirectorystructure:
                 raise
         else:
             raise Exception(self.errors)
+    def __func__(self,basePath="",baseLogPath="",baseConfPath="",gridName="",services=[]):

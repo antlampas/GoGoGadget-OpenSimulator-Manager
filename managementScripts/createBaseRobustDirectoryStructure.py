@@ -48,3 +48,5 @@ class createBaseRobustDirectorystructure:
             raise Exception(self.errors)
         
         if len(self.errors): raise Exception(self.errors)
+    def __func__(self,basePath="",baseLogPath="",baseConfPath="",gridName="",services=[]):
+        pass
